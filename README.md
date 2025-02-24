@@ -13,17 +13,17 @@
 #### デモを確認する場合
 
 1. `git clone https://github.com/ydipeepo/xdut-router.git` し、
-2. 必須アドオンをインストールし、
-  - [XDUT Task](https://github.com/ydipeepo/xdut-task)
-  - [XDUT Motion](https://github.com/ydipeepo/xdut-motion)
+2. 以下の必須アドオンをインストールし、
+    - [XDUT Task](https://github.com/ydipeepo/xdut-task)
+    - [XDUT Motion](https://github.com/ydipeepo/xdut-motion)
 3. プロジェクトを開いて実行します。
 
 #### プロジェクトにアドオンを追加する場合
 
 1. `git clone https://github.com/ydipeepo/xdut-router.git` し、
-2. 必須アドオンをインストールし、
-  - [XDUT Task](https://github.com/ydipeepo/xdut-task)
-  - [XDUT Motion](https://github.com/ydipeepo/xdut-motion)
+2. 以下の必須アドオンをインストールし、
+    - [XDUT Task](https://github.com/ydipeepo/xdut-task)
+    - [XDUT Motion](https://github.com/ydipeepo/xdut-motion)
 3. `addons/xdut-router` をプロジェクトに複製し、
 4. プロジェクト設定から必須アドオンと XDUT Router および XDUT Router Motion を有効にします。
 
@@ -32,7 +32,6 @@
 >
 > * Godot Engine 4.3 ~
 > * Redot Engine 4.3 ~
-
 
 > [!IMPORTANT]
 > このアドオンの動作には以下のアドオンが必要です。
