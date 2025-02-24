@@ -1,0 +1,918 @@
+[gd_scene load_steps=9 format=3 uid="uid://d3r7fpp2ckkns"]
+
+[ext_resource type="FontFile" uid="uid://b4qkeyfiegw8b" path="res://assets/font/super-cartoon.ttf" id="1_cahes"]
+[ext_resource type="Script" path="res://prefab/Measure.gd" id="1_kq0wv"]
+
+[sub_resource type="PrismMesh" id="PrismMesh_o3r03"]
+size = Vector3(0.25, 0.25, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_420xp"]
+shading_mode = 0
+specular_mode = 2
+disable_ambient_light = true
+disable_fog = true
+vertex_color_use_as_albedo = true
+albedo_color = Color(0, 0, 0, 1)
+disable_receive_shadows = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_s5lkf"]
+size = Vector2(1000, 1000)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_auj6d"]
+shading_mode = 0
+specular_mode = 2
+disable_ambient_light = true
+disable_fog = true
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 1, 0, 1)
+disable_receive_shadows = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_cff3g"]
+size = Vector2(2, 0.125)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_edwlo"]
+size = Vector2(1, 0.063)
+
+[node name="Measure" type="Node3D"]
+script = ExtResource("1_kq0wv")
+
+[node name="CameraPivot" type="Node3D" parent="."]
+unique_name_in_owner = true
+metadata/_edit_group_ = true
+
+[node name="Camera" type="Camera3D" parent="CameraPivot"]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 2.5, 3.5, 5)
+current = true
+fov = 45.0
+
+[node name="Label" type="Label3D" parent="CameraPivot"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 1, 0.1, 0)
+pixel_size = 0.01
+double_sided = false
+alpha_cut = 1
+modulate = Color(0, 0, 0, 1)
+text = "0.0"
+font = ExtResource("1_cahes")
+font_size = 64
+outline_size = 0
+horizontal_alignment = 0
+
+[node name="Arrow" type="MeshInstance3D" parent="CameraPivot"]
+transform = Transform3D(-4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 4.37114e-08, 1.91069e-15, 0.6, 0.1, 0)
+mesh = SubResource("PrismMesh_o3r03")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_s5lkf")
+surface_material_override/0 = SubResource("StandardMaterial3D_auj6d")
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="GuideL_01" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.1, 0)
+mesh = SubResource("PlaneMesh_cff3g")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideL_02" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.1, -8)
+mesh = SubResource("PlaneMesh_cff3g")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideL_03" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.1, -16)
+mesh = SubResource("PlaneMesh_cff3g")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideL_04" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.1, -24)
+mesh = SubResource("PlaneMesh_cff3g")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideL_05" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.1, -32)
+mesh = SubResource("PlaneMesh_cff3g")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideL_06" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.1, -40)
+mesh = SubResource("PlaneMesh_cff3g")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideL_07" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.1, -48)
+mesh = SubResource("PlaneMesh_cff3g")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideL_08" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.1, -56)
+mesh = SubResource("PlaneMesh_cff3g")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideL_09" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.1, -64)
+mesh = SubResource("PlaneMesh_cff3g")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideL_10" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.1, -72)
+mesh = SubResource("PlaneMesh_cff3g")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideL_11" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.1, -80)
+mesh = SubResource("PlaneMesh_cff3g")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideL_12" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.1, -88)
+mesh = SubResource("PlaneMesh_cff3g")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideL_13" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.1, -96)
+mesh = SubResource("PlaneMesh_cff3g")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_01" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -1)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_02" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -2)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_03" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -3)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_04" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -4)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_05" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -5)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_06" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -6)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_07" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -7)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_08" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -9)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_09" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -10)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_10" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -11)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_11" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -12)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_12" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -13)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_13" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -14)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_14" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -15)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_15" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -17)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_16" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -18)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_17" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -19)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_18" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -20)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_19" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -21)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_20" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -22)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_21" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -23)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_22" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -25)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_23" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -26)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_24" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -27)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_25" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -28)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_26" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -29)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_27" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -30)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_28" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -31)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_29" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -33)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_30" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -34)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_31" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -35)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_32" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -36)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_33" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -37)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_34" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -38)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_35" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -39)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_36" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -41)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_37" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -42)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_38" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -43)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_39" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -44)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_40" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -45)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_41" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -46)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_42" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -47)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_43" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -49)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_44" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -50)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_45" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -51)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_46" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -52)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_47" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -53)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_48" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -54)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_49" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -55)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_50" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -57)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_51" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -58)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_52" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -59)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_53" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -60)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_54" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -61)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_55" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -62)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_56" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -63)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_57" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -65)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_58" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -66)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_59" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -67)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_60" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -68)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_61" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -69)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_62" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -70)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_63" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -71)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_64" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -73)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_65" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -74)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_66" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -75)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_67" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -76)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_68" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -77)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_69" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -78)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_70" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -79)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_71" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -81)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_72" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -82)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_73" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -83)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_74" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -84)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_75" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -85)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_76" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -86)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_77" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -87)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_78" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -89)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_79" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -90)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_80" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -91)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_81" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -92)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_82" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -93)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_83" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -94)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="GuideS_84" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.1, -95)
+mesh = SubResource("PlaneMesh_edwlo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_420xp")
+metadata/_edit_lock_ = true
+
+[node name="Label_01" type="Label3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+pixel_size = 0.01
+double_sided = false
+alpha_cut = 1
+modulate = Color(0, 0, 0, 1)
+text = "0.0"
+font = ExtResource("1_cahes")
+font_size = 128
+outline_size = 0
+horizontal_alignment = 2
+metadata/_edit_lock_ = true
+
+[node name="Label_02" type="Label3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -8)
+pixel_size = 0.01
+double_sided = false
+alpha_cut = 1
+modulate = Color(0, 0, 0, 1)
+text = "8.0"
+font = ExtResource("1_cahes")
+font_size = 128
+outline_size = 0
+horizontal_alignment = 2
+metadata/_edit_lock_ = true
+
+[node name="Label_03" type="Label3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -16)
+pixel_size = 0.01
+double_sided = false
+alpha_cut = 1
+modulate = Color(0, 0, 0, 1)
+text = "16.0"
+font = ExtResource("1_cahes")
+font_size = 128
+outline_size = 0
+horizontal_alignment = 2
+metadata/_edit_lock_ = true
+
+[node name="Label_04" type="Label3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -24)
+pixel_size = 0.01
+double_sided = false
+alpha_cut = 1
+modulate = Color(0, 0, 0, 1)
+text = "24.0"
+font = ExtResource("1_cahes")
+font_size = 128
+outline_size = 0
+horizontal_alignment = 2
+metadata/_edit_lock_ = true
+
+[node name="Label_05" type="Label3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -32)
+pixel_size = 0.01
+double_sided = false
+alpha_cut = 1
+modulate = Color(0, 0, 0, 1)
+text = "32.0"
+font = ExtResource("1_cahes")
+font_size = 128
+outline_size = 0
+horizontal_alignment = 2
+metadata/_edit_lock_ = true
+
+[node name="Label_06" type="Label3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -40)
+pixel_size = 0.01
+double_sided = false
+alpha_cut = 1
+modulate = Color(0, 0, 0, 1)
+text = "40.0"
+font = ExtResource("1_cahes")
+font_size = 128
+outline_size = 0
+horizontal_alignment = 2
+metadata/_edit_lock_ = true
+
+[node name="Label_07" type="Label3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -48)
+pixel_size = 0.01
+double_sided = false
+alpha_cut = 1
+modulate = Color(0, 0, 0, 1)
+text = "48.0"
+font = ExtResource("1_cahes")
+font_size = 128
+outline_size = 0
+horizontal_alignment = 2
+metadata/_edit_lock_ = true
+
+[node name="Label_08" type="Label3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -56)
+pixel_size = 0.01
+double_sided = false
+alpha_cut = 1
+modulate = Color(0, 0, 0, 1)
+text = "56.0"
+font = ExtResource("1_cahes")
+font_size = 128
+outline_size = 0
+horizontal_alignment = 2
+metadata/_edit_lock_ = true
+
+[node name="Label_09" type="Label3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -64)
+pixel_size = 0.01
+double_sided = false
+alpha_cut = 1
+modulate = Color(0, 0, 0, 1)
+text = "64.0"
+font = ExtResource("1_cahes")
+font_size = 128
+outline_size = 0
+horizontal_alignment = 2
+metadata/_edit_lock_ = true
+
+[node name="Label_10" type="Label3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -72)
+pixel_size = 0.01
+double_sided = false
+alpha_cut = 1
+modulate = Color(0, 0, 0, 1)
+text = "72.0"
+font = ExtResource("1_cahes")
+font_size = 128
+outline_size = 0
+horizontal_alignment = 2
+metadata/_edit_lock_ = true
+
+[node name="Label_11" type="Label3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -80)
+pixel_size = 0.01
+double_sided = false
+alpha_cut = 1
+modulate = Color(0, 0, 0, 1)
+text = "80.0"
+font = ExtResource("1_cahes")
+font_size = 128
+outline_size = 0
+horizontal_alignment = 2
+metadata/_edit_lock_ = true
+
+[node name="Label_12" type="Label3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -88)
+pixel_size = 0.01
+double_sided = false
+alpha_cut = 1
+modulate = Color(0, 0, 0, 1)
+text = "88.0"
+font = ExtResource("1_cahes")
+font_size = 128
+outline_size = 0
+horizontal_alignment = 2
+metadata/_edit_lock_ = true
+
+[node name="Label_13" type="Label3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -96)
+pixel_size = 0.01
+double_sided = false
+alpha_cut = 1
+modulate = Color(0, 0, 0, 1)
+text = "96.0"
+font = ExtResource("1_cahes")
+font_size = 128
+outline_size = 0
+horizontal_alignment = 2
+metadata/_edit_lock_ = true

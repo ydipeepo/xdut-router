@@ -1,0 +1,48 @@
+[gd_scene load_steps=3 format=3 uid="uid://bu1jkyr2wuw"]
+
+[ext_resource type="FontFile" uid="uid://b4qkeyfiegw8b" path="res://assets/font/super-cartoon.ttf" id="1_0pft6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wnv3y"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="PackageRoute_AutoFreeNodeAndPackage" type="Panel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wnv3y")
+
+[node name="Content" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -87.0
+offset_right = 87.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Key" type="Label" parent="Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.43134, 0.43134, 0.43134, 1)
+theme_override_fonts/font = ExtResource("1_0pft6")
+theme_override_font_sizes/font_size = 10
+text = "auto_free ="
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Value" type="Label" parent="Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_0pft6")
+theme_override_font_sizes/font_size = 15
+text = "AUTO_FREE_NODE_AND_PACKAGE"
+horizontal_alignment = 1
+vertical_alignment = 1

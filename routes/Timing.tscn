@@ -1,0 +1,378 @@
+[gd_scene load_steps=22 format=3 uid="uid://bxxjn3ts7u4cl"]
+
+[ext_resource type="Script" path="res://addons/xdut-router/RouteControl.gd" id="1_5admw"]
+[ext_resource type="Script" path="res://routes/Timing.gd" id="1_xbluf"]
+[ext_resource type="FontFile" uid="uid://b4qkeyfiegw8b" path="res://assets/font/super-cartoon.ttf" id="2_2cauj"]
+[ext_resource type="Script" path="res://addons/xdut-router/RouteAnimationBase.gd" id="2_pdko3"]
+[ext_resource type="Script" path="res://addons/xdut-router-motion/MotionRouteAnimation.gd" id="4_ood3g"]
+[ext_resource type="Script" path="res://addons/xdut-router-motion/SpringMotionRouteTransition.gd" id="4_yl42l"]
+[ext_resource type="Script" path="res://addons/xdut-router-motion/FloatMotionRouteValue.gd" id="5_vu0pb"]
+[ext_resource type="Script" path="res://addons/xdut-router-motion/Vector3MotionRouteValue.gd" id="6_72p0f"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rk8n6"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Resource" id="Resource_li1s4"]
+script = ExtResource("4_yl42l")
+stiffness = 100.0
+damping = 10.0
+mass = 1.0
+rest_delta = 0.01
+rest_speed = 0.01
+limit_overdamping = true
+limit_overshooting = false
+
+[sub_resource type="Resource" id="Resource_4t1li"]
+script = ExtResource("4_yl42l")
+stiffness = 100.0
+damping = 10.0
+mass = 1.0
+rest_delta = 0.01
+rest_speed = 0.01
+limit_overdamping = true
+limit_overshooting = false
+
+[sub_resource type="Resource" id="Resource_r0kht"]
+script = ExtResource("5_vu0pb")
+value_before_enter = 1.0
+value = 0.0
+value_after_exit = 1.0
+delay = 0.0
+process = 0
+inherit_value_before_enter = false
+inherit_value_before_exit = true
+
+[sub_resource type="Resource" id="Resource_3qc4u"]
+script = ExtResource("4_ood3g")
+node_path = "./ViewportContainer/Viewport/Mesh"
+node_property_key = "rotation:y"
+value = SubResource("Resource_r0kht")
+enter_transition = SubResource("Resource_li1s4")
+exit_transition = SubResource("Resource_4t1li")
+
+[sub_resource type="Resource" id="Resource_tgj42"]
+script = ExtResource("4_yl42l")
+stiffness = 100.0
+damping = 10.0
+mass = 1.0
+rest_delta = 0.01
+rest_speed = 0.01
+limit_overdamping = true
+limit_overshooting = false
+
+[sub_resource type="Resource" id="Resource_qe6i0"]
+script = ExtResource("4_yl42l")
+stiffness = 100.0
+damping = 10.0
+mass = 1.0
+rest_delta = 0.01
+rest_speed = 0.01
+limit_overdamping = true
+limit_overshooting = true
+
+[sub_resource type="Resource" id="Resource_1ebr6"]
+script = ExtResource("6_72p0f")
+value_before_enter = Vector3(0, 0, 0)
+value = Vector3(1, 1, 1)
+value_after_exit = Vector3(0, 0, 0)
+delay = 0.0
+process = 0
+inherit_value_before_enter = false
+inherit_value_before_exit = true
+
+[sub_resource type="Resource" id="Resource_vue1b"]
+script = ExtResource("4_ood3g")
+node_path = "./ViewportContainer/Viewport/Mesh"
+node_property_key = "scale"
+value = SubResource("Resource_1ebr6")
+enter_transition = SubResource("Resource_tgj42")
+exit_transition = SubResource("Resource_qe6i0")
+
+[sub_resource type="TextMesh" id="TextMesh_sobo6"]
+text = "Bananana"
+font = ExtResource("2_2cauj")
+font_size = 127
+depth = 0.25
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5toq1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_icma6"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7wj0g"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[node name="Timing" type="CenterContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xbluf")
+
+[node name="Content" type="VBoxContainer" parent="."]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(384, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+localize_numeral_system = false
+theme_override_constants/separation = 32
+
+[node name="Panel" type="PanelContainer" parent="Content"]
+unique_name_in_owner = true
+auto_translate_mode = 2
+clip_children = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(384, 290)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_styles/panel = SubResource("StyleBoxFlat_rk8n6")
+
+[node name="Margin" type="MarginContainer" parent="Content/Panel"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 2
+localize_numeral_system = false
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Route_Open" type="Control" parent="Content/Panel/Margin"]
+layout_mode = 2
+script = ExtResource("1_5admw")
+animations = Array[ExtResource("2_pdko3")]([SubResource("Resource_3qc4u"), SubResource("Resource_vue1b")])
+route_segment = "open"
+
+[node name="ViewportContainer" type="SubViewportContainer" parent="Content/Panel/Margin/Route_Open"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="Viewport" type="SubViewport" parent="Content/Panel/Margin/Route_Open/ViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(352, 258)
+render_target_update_mode = 4
+
+[node name="Camera" type="Camera3D" parent="Content/Panel/Margin/Route_Open/ViewportContainer/Viewport"]
+transform = Transform3D(0.707107, -0.353553, 0.612372, 0, 0.866025, 0.5, -0.707107, -0.353553, 0.612372, 2, 1.5, 2)
+projection = 1
+current = true
+size = 4.0
+
+[node name="Light" type="DirectionalLight3D" parent="Content/Panel/Margin/Route_Open/ViewportContainer/Viewport"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 2)
+light_energy = 3.0
+
+[node name="Mesh" type="MeshInstance3D" parent="Content/Panel/Margin/Route_Open/ViewportContainer/Viewport"]
+mesh = SubResource("TextMesh_sobo6")
+
+[node name="Control" type="Control" parent="Content/Panel/Margin"]
+layout_mode = 2
+
+[node name="Entering" type="CheckBox" parent="Content/Panel/Margin/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 44.0
+offset_top = 156.0
+offset_right = 137.0
+offset_bottom = 180.0
+theme_override_colors/font_disabled_color = Color(0.333333, 0.333333, 0.333333, 1)
+theme_override_colors/font_color = Color(0.333333, 0.333333, 0.333333, 1)
+theme_override_fonts/font = ExtResource("2_2cauj")
+disabled = true
+text = "entering_path"
+
+[node name="Entered" type="CheckBox" parent="Content/Panel/Margin/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 44.0
+offset_top = 180.0
+offset_right = 137.0
+offset_bottom = 204.0
+theme_override_colors/font_disabled_color = Color(0.333333, 0.333333, 0.333333, 1)
+theme_override_colors/font_color = Color(0.333333, 0.333333, 0.333333, 1)
+theme_override_fonts/font = ExtResource("2_2cauj")
+disabled = true
+text = "entered_path"
+
+[node name="Exiting" type="CheckBox" parent="Content/Panel/Margin/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 44.0
+offset_top = 204.0
+offset_right = 137.0
+offset_bottom = 228.0
+theme_override_colors/font_disabled_color = Color(0.333333, 0.333333, 0.333333, 1)
+theme_override_colors/font_color = Color(0.333333, 0.333333, 0.333333, 1)
+theme_override_fonts/font = ExtResource("2_2cauj")
+disabled = true
+text = "exiting_path"
+
+[node name="Exited" type="CheckBox" parent="Content/Panel/Margin/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 44.0
+offset_top = 228.0
+offset_right = 137.0
+offset_bottom = 252.0
+theme_override_colors/font_disabled_color = Color(0.333333, 0.333333, 0.333333, 1)
+theme_override_colors/font_color = Color(0.333333, 0.333333, 0.333333, 1)
+theme_override_fonts/font = ExtResource("2_2cauj")
+disabled = true
+button_pressed = true
+text = "exited_path"
+
+[node name="Enter" type="CheckBox" parent="Content/Panel/Margin/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 168.0
+offset_right = 32.0
+offset_bottom = 192.0
+theme_override_colors/font_disabled_color = Color(0.333333, 0.333333, 0.333333, 1)
+theme_override_colors/font_color = Color(0.333333, 0.333333, 0.333333, 1)
+theme_override_fonts/font = ExtResource("2_2cauj")
+disabled = true
+
+[node name="Exit" type="CheckBox" parent="Content/Panel/Margin/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 216.0
+offset_right = 32.0
+offset_bottom = 240.0
+theme_override_colors/font_disabled_color = Color(0.333333, 0.333333, 0.333333, 1)
+theme_override_colors/font_color = Color(0.333333, 0.333333, 0.333333, 1)
+theme_override_fonts/font = ExtResource("2_2cauj")
+disabled = true
+button_pressed = true
+
+[node name="Curl1" type="Label" parent="Content/Panel/Margin/Control"]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 150.0
+offset_right = 50.0
+offset_bottom = 203.0
+theme_override_colors/font_color = Color(0.776471, 0.776471, 0.776471, 1)
+theme_override_font_sizes/font_size = 32
+text = "{"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Curl2" type="Label" parent="Content/Panel/Margin/Control"]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 198.0
+offset_right = 50.0
+offset_bottom = 251.0
+theme_override_colors/font_color = Color(0.776471, 0.776471, 0.776471, 1)
+theme_override_font_sizes/font_size = 32
+text = "{"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Navigator" type="HBoxContainer" parent="Content"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 2
+localize_numeral_system = false
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Goto" type="Button" parent="Content/Navigator"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_2cauj")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_5toq1")
+theme_override_styles/hover = SubResource("StyleBoxFlat_icma6")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_7wj0g")
+theme_override_styles/normal = SubResource("StyleBoxFlat_icma6")
+text = "Exit"
+
+[node name="Goto_Open" type="Button" parent="Content/Navigator"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_2cauj")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_5toq1")
+theme_override_styles/hover = SubResource("StyleBoxFlat_icma6")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_7wj0g")
+theme_override_styles/normal = SubResource("StyleBoxFlat_icma6")
+text = "Enter"
+
+[node name="Note" type="Label" parent="Content"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_font_sizes/font_size = 12
+text = "Route の状態変化は 4 つのシグナルにより通知されます。
+また各遷移は Awaitable として返され、
+完了するまで待機することができます。"
+horizontal_alignment = 1
+autowrap_mode = 1
+
+[connection signal="entered_path" from="Content/Panel/Margin/Route_Open" to="." method="_on_route_open_entered_path"]
+[connection signal="entering_path" from="Content/Panel/Margin/Route_Open" to="." method="_on_route_open_entering_path"]
+[connection signal="exited_path" from="Content/Panel/Margin/Route_Open" to="." method="_on_route_open_exited_path"]
+[connection signal="exiting_path" from="Content/Panel/Margin/Route_Open" to="." method="_on_route_open_exiting_path"]
+[connection signal="pressed" from="Content/Navigator/Goto" to="." method="_on_goto_pressed"]
+[connection signal="pressed" from="Content/Navigator/Goto_Open" to="." method="_on_goto_open_pressed"]

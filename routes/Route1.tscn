@@ -1,0 +1,184 @@
+[gd_scene load_steps=14 format=3 uid="uid://f6lu0fsyb6xe"]
+
+[ext_resource type="Script" path="res://routes/Route1.gd" id="1_g8uae"]
+[ext_resource type="FontFile" uid="uid://b4qkeyfiegw8b" path="res://assets/font/super-cartoon.ttf" id="1_wim5p"]
+[ext_resource type="Script" path="res://addons/xdut-router/RouteControl.gd" id="1_xptco"]
+[ext_resource type="Script" path="res://addons/xdut-router/RouteAnimationBase.gd" id="3_ub6dr"]
+[ext_resource type="Script" path="res://addons/xdut-router-motion/TweenMotionRouteTransition.gd" id="4_888e5"]
+[ext_resource type="Script" path="res://addons/xdut-router-motion/MotionRouteAnimation.gd" id="4_ivo6e"]
+[ext_resource type="Script" path="res://addons/xdut-router-motion/FloatMotionRouteValue.gd" id="5_cu4rk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_an8yj"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Resource" id="Resource_b1hgk"]
+script = ExtResource("4_888e5")
+trans = 4
+ease = 1
+duration = 0.3
+
+[sub_resource type="Resource" id="Resource_3ck02"]
+script = ExtResource("5_cu4rk")
+value_before_enter = 256.0
+value = 0.0
+value_after_exit = -256.0
+delay = 0.0
+process = 0
+inherit_value_before_enter = false
+inherit_value_before_exit = false
+
+[sub_resource type="Resource" id="Resource_fo54k"]
+script = ExtResource("4_ivo6e")
+node_path = "./Background"
+node_property_key = "position:x"
+value = SubResource("Resource_3ck02")
+enter_transition = SubResource("Resource_b1hgk")
+exit_transition = SubResource("Resource_b1hgk")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1pn35"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pyqoa"]
+
+[node name="Route1" type="CenterContainer"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+localize_numeral_system = false
+script = ExtResource("1_g8uae")
+
+[node name="Content" type="HBoxContainer" parent="."]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 2
+localize_numeral_system = false
+theme_override_constants/separation = 32
+alignment = 1
+
+[node name="Panel" type="PanelContainer" parent="Content"]
+auto_translate_mode = 2
+clip_children = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(256, 128)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_styles/panel = SubResource("StyleBoxFlat_an8yj")
+
+[node name="Route_Flip" type="Control" parent="Content/Panel"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 2
+localize_numeral_system = false
+script = ExtResource("1_xptco")
+animations = Array[ExtResource("3_ub6dr")]([SubResource("Resource_fo54k")])
+route_segment = "flip"
+
+[node name="Background" type="ColorRect" parent="Content/Panel/Route_Flip"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+localize_numeral_system = false
+color = Color(1, 1, 1, 0)
+
+[node name="Goto_Flip" type="Button" parent="Content/Panel/Route_Flip/Background"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+localize_numeral_system = false
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_wim5p")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_1pn35")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_1pn35")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_1pn35")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_1pn35")
+text = "Flip!"
+
+[node name="Route_Flop" type="Control" parent="Content/Panel"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 2
+localize_numeral_system = false
+script = ExtResource("1_xptco")
+animations = Array[ExtResource("3_ub6dr")]([SubResource("Resource_fo54k")])
+route_segment = "flop"
+
+[node name="Background" type="ColorRect" parent="Content/Panel/Route_Flop"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+localize_numeral_system = false
+color = Color(0.125911, 0.125911, 0.125911, 1)
+
+[node name="Goto_Flop" type="Button" parent="Content/Panel/Route_Flop/Background"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+localize_numeral_system = false
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("1_wim5p")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_1pn35")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_1pn35")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_1pn35")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_pyqoa")
+text = "Flop!"
+
+[node name="Note" type="Label" parent="Content"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_font_sizes/font_size = 12
+text = "Route ノードは
+Router を通して制御することができます。"
+autowrap_mode = 1
+
+[connection signal="pressed" from="Content/Panel/Route_Flip/Background/Goto_Flip" to="." method="_on_goto_flip_pressed"]
+[connection signal="pressed" from="Content/Panel/Route_Flop/Background/Goto_Flop" to="." method="_on_goto_flop_pressed"]

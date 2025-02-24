@@ -1,0 +1,236 @@
+[gd_scene load_steps=17 format=3 uid="uid://c7y2dlr8burxs"]
+
+[ext_resource type="Script" path="res://routes/PatternMatch.gd" id="1_r54yt"]
+[ext_resource type="PackedScene" uid="uid://d3r7fpp2ckkns" path="res://prefab/Measure.tscn" id="2_678qt"]
+[ext_resource type="Script" path="res://addons/xdut-router/RouteControl.gd" id="2_lwb38"]
+[ext_resource type="Script" path="res://addons/xdut-router/RouteAnimationBase.gd" id="3_h6ml3"]
+[ext_resource type="Script" path="res://addons/xdut-router-motion/TweenMotionRouteTransition.gd" id="4_x3lhd"]
+[ext_resource type="Script" path="res://addons/xdut-router-motion/MotionRouteAnimation.gd" id="5_mstri"]
+[ext_resource type="Script" path="res://addons/xdut-router-motion/FloatMotionRouteValue.gd" id="6_5hktr"]
+[ext_resource type="FontFile" uid="uid://b4qkeyfiegw8b" path="res://assets/font/super-cartoon.ttf" id="7_00ifj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_an8yj"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Resource" id="Resource_qbb6k"]
+script = ExtResource("4_x3lhd")
+trans = 4
+ease = 1
+duration = 0.3
+
+[sub_resource type="Resource" id="Resource_wifv5"]
+script = ExtResource("4_x3lhd")
+trans = 4
+ease = 0
+duration = 0.3
+
+[sub_resource type="Resource" id="Resource_0yntg"]
+script = ExtResource("6_5hktr")
+value_before_enter = 0.0
+value = 1.0
+value_after_exit = 0.0
+delay = 0.0
+process = 0
+inherit_value_before_enter = true
+inherit_value_before_exit = true
+
+[sub_resource type="Resource" id="Resource_i3o5w"]
+script = ExtResource("5_mstri")
+node_path = "."
+node_property_key = "modulate:a"
+value = SubResource("Resource_0yntg")
+enter_transition = SubResource("Resource_qbb6k")
+exit_transition = SubResource("Resource_wifv5")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_adv0r"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iu5vo"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hdbmn"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[node name="Route2" type="CenterContainer"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+localize_numeral_system = false
+script = ExtResource("1_r54yt")
+
+[node name="Content" type="VBoxContainer" parent="."]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(384, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+localize_numeral_system = false
+theme_override_constants/separation = 32
+
+[node name="Panel" type="PanelContainer" parent="Content"]
+auto_translate_mode = 2
+clip_children = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(384, 280)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_styles/panel = SubResource("StyleBoxFlat_an8yj")
+
+[node name="RouteControl" type="Control" parent="Content/Panel"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+script = ExtResource("2_lwb38")
+flags = 5
+animations = Array[ExtResource("3_h6ml3")]([SubResource("Resource_i3o5w")])
+route_segment = "measure-:offset(\\d+)"
+
+[node name="ViewportContainer" type="SubViewportContainer" parent="Content/Panel/RouteControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="Viewport" type="SubViewport" parent="Content/Panel/RouteControl/ViewportContainer"]
+handle_input_locally = false
+size = Vector2i(464, 280)
+render_target_update_mode = 4
+
+[node name="Measure" parent="Content/Panel/RouteControl/ViewportContainer/Viewport" instance=ExtResource("2_678qt")]
+
+[node name="Navigator" type="HBoxContainer" parent="Content"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 2
+localize_numeral_system = false
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Goto" type="Button" parent="Content/Navigator"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("7_00ifj")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_adv0r")
+theme_override_styles/hover = SubResource("StyleBoxFlat_iu5vo")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hdbmn")
+theme_override_styles/normal = SubResource("StyleBoxFlat_iu5vo")
+text = "/"
+
+[node name="Goto_Measure_0" type="Button" parent="Content/Navigator"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("7_00ifj")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_adv0r")
+theme_override_styles/hover = SubResource("StyleBoxFlat_iu5vo")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hdbmn")
+theme_override_styles/normal = SubResource("StyleBoxFlat_iu5vo")
+text = "/measure-0"
+
+[node name="Goto_Measure_32" type="Button" parent="Content/Navigator"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("7_00ifj")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_adv0r")
+theme_override_styles/hover = SubResource("StyleBoxFlat_iu5vo")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hdbmn")
+theme_override_styles/normal = SubResource("StyleBoxFlat_iu5vo")
+text = "/measure-32"
+
+[node name="Goto_Measure_64" type="Button" parent="Content/Navigator"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("7_00ifj")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_adv0r")
+theme_override_styles/hover = SubResource("StyleBoxFlat_iu5vo")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hdbmn")
+theme_override_styles/normal = SubResource("StyleBoxFlat_iu5vo")
+text = "/measure-64"
+
+[node name="Note" type="Label" parent="Content"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_font_sizes/font_size = 12
+text = "Route セグメントはパターンにマッチさせることもできます。
+マッチは Route パラメタとして受け取ることができます。"
+horizontal_alignment = 1
+autowrap_mode = 1
+
+[connection signal="pressed" from="Content/Navigator/Goto" to="." method="_on_goto_pressed"]
+[connection signal="pressed" from="Content/Navigator/Goto_Measure_0" to="." method="_on_goto_measure_0_pressed"]
+[connection signal="pressed" from="Content/Navigator/Goto_Measure_32" to="." method="_on_goto_measure_32_pressed"]
+[connection signal="pressed" from="Content/Navigator/Goto_Measure_64" to="." method="_on_goto_measure_64_pressed"]

@@ -1,0 +1,57 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="XDUT Router"
+config/description="疑似 URL によりシーン遷移を部品化するためのアドオンです。セグメントやパターン単位のルーティング、サブシーン側でのマッチの受信、アニメーションやパッケージの遅延読み込みに対応しています。"
+config/tags=PackedStringArray("xdut")
+run/main_scene="res://Test_Router.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+boot_splash/bg_color=Color(0, 0, 0, 1)
+boot_splash/show_image=false
+boot_splash/fullsize=false
+boot_splash/use_filter=false
+
+[autoload]
+
+XDUT_TaskCanonical="*res://addons/xdut-task/XDUT_TaskCanonical.gd"
+XDUT_MotionCanonical="*res://addons/xdut-motion/XDUT_MotionCanonical.gd"
+XDUT_RouterCanonical="*res://addons/xdut-router/XDUT_RouterCanonical.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=640
+window/size/resizable=false
+window/vsync/vsync_mode=0
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/xdut-motion/plugin.cfg", "res://addons/xdut-router-motion/plugin.cfg", "res://addons/xdut-router/plugin.cfg", "res://addons/xdut-task/plugin.cfg")
+
+[file_customization]
+
+folder_colors={
+"res://addons/xdut-motion/": "gray",
+"res://addons/xdut-router-motion/": "pink",
+"res://addons/xdut-router/": "pink",
+"res://addons/xdut-task/": "gray"
+}
+
+[filesystem]
+
+import/blender/enabled=false
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)

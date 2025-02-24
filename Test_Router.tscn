@@ -1,0 +1,213 @@
+[gd_scene load_steps=11 format=3 uid="uid://doif1gwh18s1f"]
+
+[ext_resource type="Script" uid="uid://dop8u47tkl8cq" path="res://Test_Router.gd" id="1_m7jxf"]
+[ext_resource type="Script" uid="uid://chvgnddrgdcfu" path="res://addons/xdut-router/RouteAnimationBase.gd" id="3_cyaqf"]
+[ext_resource type="Script" uid="uid://dhmrcfjn08nva" path="res://addons/xdut-router-motion/TweenMotionRouteTransition.gd" id="4_t4hmn"]
+[ext_resource type="Script" uid="uid://fu3v6ly7kmkq" path="res://addons/xdut-router-motion/MotionRouteAnimation.gd" id="5_dxlmv"]
+[ext_resource type="Script" uid="uid://4c6tq5gvu5it" path="res://addons/xdut-router-motion/FloatMotionRouteValue.gd" id="6_5n1yy"]
+[ext_resource type="Script" uid="uid://cspc7h1lrtvra" path="res://addons/xdut-router/PackageRouteControl.gd" id="7_4cj4v"]
+
+[sub_resource type="Resource" id="Resource_aglw1"]
+script = ExtResource("4_t4hmn")
+trans = 4
+ease = 2
+duration = 0.3
+
+[sub_resource type="Resource" id="Resource_dssph"]
+script = ExtResource("4_t4hmn")
+trans = 4
+ease = 2
+duration = 0.3
+
+[sub_resource type="Resource" id="Resource_d5xr6"]
+script = ExtResource("6_5n1yy")
+value_before_enter = 0.0
+value = 1.0
+value_after_exit = 0.0
+delay = 0.0
+process = 0
+inherit_value_before_enter = false
+inherit_value_before_exit = true
+
+[sub_resource type="Resource" id="Resource_8jqp5"]
+script = ExtResource("5_dxlmv")
+node_path = "."
+node_property_key = "modulate:a"
+value = SubResource("Resource_d5xr6")
+enter_transition = SubResource("Resource_aglw1")
+exit_transition = SubResource("Resource_dssph")
+
+[node name="Test_Router" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 48
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 48
+theme_override_constants/margin_bottom = 32
+script = ExtResource("1_m7jxf")
+
+[node name="Container" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="VBoxContainer" parent="Container"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="Container/Header"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "XDUT Router"
+vertical_alignment = 1
+
+[node name="Description" type="Label" parent="Container/Header"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.733333, 0.733333, 0.733333, 1)
+theme_override_font_sizes/font_size = 12
+text = "疑似 URL によりシーン遷移を部品化するためのアドオンです。セグメントやパターン単位のルーティング、サブシーン側でのマッチの受信、アニメーションやパッケージの遅延読み込みに対応しています。"
+vertical_alignment = 1
+
+[node name="Separator" type="HSeparator" parent="Container"]
+modulate = Color(1, 1, 1, 0.247059)
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+
+[node name="Content" type="HBoxContainer" parent="Container"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="Navigator" type="VBoxContainer" parent="Container/Content"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Back" type="Button" parent="Container/Content/Navigator"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+disabled = true
+text = "Back"
+alignment = 0
+
+[node name="Goto_Route1" type="Button" parent="Container/Content/Navigator"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Route #1"
+alignment = 0
+
+[node name="Goto_Route2" type="Button" parent="Container/Content/Navigator"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Route #2"
+alignment = 0
+
+[node name="Goto_PackageRoute" type="Button" parent="Container/Content/Navigator"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Package Route & Cache"
+alignment = 0
+
+[node name="Goto_PatternMatch" type="Button" parent="Container/Content/Navigator"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Pattern Match"
+alignment = 0
+
+[node name="Goto_Timing" type="Button" parent="Container/Content/Navigator"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Timing"
+alignment = 0
+
+[node name="Separator" type="VSeparator" parent="Container/Content"]
+modulate = Color(1, 1, 1, 0.247059)
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+
+[node name="Routes" type="Control" parent="Container/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Route_Route1" type="Control" parent="Container/Content/Routes"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("7_4cj4v")
+package_path = "res://routes/Route1.tscn"
+flags = 13
+animations = Array[ExtResource("3_cyaqf")]([SubResource("Resource_8jqp5")])
+route_segment = "route-1"
+
+[node name="Route_Route2" type="Control" parent="Container/Content/Routes"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("7_4cj4v")
+package_path = "res://routes/Route2.tscn"
+flags = 12
+animations = Array[ExtResource("3_cyaqf")]([SubResource("Resource_8jqp5")])
+route_segment = "route-2"
+
+[node name="Route_PackageRoute" type="Control" parent="Container/Content/Routes"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("7_4cj4v")
+package_path = "res://routes/PackageRoute.tscn"
+flags = 12
+animations = Array[ExtResource("3_cyaqf")]([SubResource("Resource_8jqp5")])
+route_segment = "package-route"
+
+[node name="Route_PatternMatch" type="Control" parent="Container/Content/Routes"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("7_4cj4v")
+package_path = "res://routes/PatternMatch.tscn"
+flags = 12
+animations = Array[ExtResource("3_cyaqf")]([SubResource("Resource_8jqp5")])
+route_segment = "pattern-match"
+
+[node name="Route_Timing" type="Control" parent="Container/Content/Routes"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("7_4cj4v")
+package_path = "res://routes/Timing.tscn"
+flags = 12
+animations = Array[ExtResource("3_cyaqf")]([SubResource("Resource_8jqp5")])
+route_segment = "timing"
+
+[connection signal="pressed" from="Container/Content/Navigator/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="Container/Content/Navigator/Goto_Route1" to="." method="_on_goto_route_1_pressed"]
+[connection signal="pressed" from="Container/Content/Navigator/Goto_Route2" to="." method="_on_goto_route_2_pressed"]
+[connection signal="pressed" from="Container/Content/Navigator/Goto_PackageRoute" to="." method="_on_goto_package_route_pressed"]
+[connection signal="pressed" from="Container/Content/Navigator/Goto_PatternMatch" to="." method="_on_goto_pattern_match_pressed"]
+[connection signal="pressed" from="Container/Content/Navigator/Goto_Timing" to="." method="_on_goto_timing_pressed"]
