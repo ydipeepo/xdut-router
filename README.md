@@ -43,6 +43,6 @@
 
 ## ライセンス
 
-🔗 [MIT](https://github.com/ydipeepo/xdut-bigint/blob/main/LICENSE) ライセンスです。
+🔗 [MIT](https://github.com/ydipeepo/xdut-router/blob/main/LICENSE) ライセンスです。
 
 <br />
