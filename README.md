@@ -18,6 +18,8 @@
     - [XDUT Motion](https://github.com/ydipeepo/xdut-motion)
 3. プロジェクトを開いて実行します。
 
+<br />
+
 #### プロジェクトにアドオンを追加する場合
 
 1. `git clone https://github.com/ydipeepo/xdut-router.git` し、
@@ -26,6 +28,8 @@
     - [XDUT Motion](https://github.com/ydipeepo/xdut-motion)
 3. `addons/xdut-router` をプロジェクトに複製し、
 4. プロジェクト設定から必須アドオンと XDUT Router および XDUT Router Motion を有効にします。
+
+<br />
 
 > [!TIP]
 > このアドオンは Godot Engine 及び Redot Engine に対応しています。
