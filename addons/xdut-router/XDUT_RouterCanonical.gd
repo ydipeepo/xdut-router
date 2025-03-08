@@ -28,8 +28,7 @@ func get_navigation_verbose() -> bool:
 	return _navigation_verbose
 
 func get_current_path() -> String:
-	var navigation := _navigation_stack.back()
-	return XDUT_RouteHelper.to_path(navigation.path_segments)
+	return XDUT_RouteHelper.to_path(_get_current_navigation().path_segments)
 
 func register(
 	route: Node,
@@ -40,7 +39,7 @@ func register(
 
 	XDUT_RouteHelper.set_route(route, route_segment)
 	var route_segments := XDUT_RouteHelper.get_route_segments(route)
-	var navigation := _navigation_stack.back()
+	var navigation := _get_current_navigation()
 	var path := XDUT_RouteHelper.to_path(navigation.path_segments)
 
 	var group := _get_group() if temporary else _create_group()
@@ -58,7 +57,7 @@ func unregister(
 	var temporary := not _group_etag_stack.is_empty()
 
 	var route_segments := XDUT_RouteHelper.get_route_segments(route)
-	var navigation := _navigation_stack.back()
+	var navigation := _get_current_navigation()
 	var path := XDUT_RouteHelper.to_path(navigation.path_segments)
 	
 	var group := _get_group() if temporary else _create_group()
@@ -69,53 +68,49 @@ func goto(
 	path: String,
 	flags := 0) -> Awaitable:
 
-	if path == get_current_path():
+	var last_navigation := _get_current_navigation()
+	var next_navigation_path_segments := XDUT_RouteHelper.parse_path(path, last_navigation.path_segments)
+	if next_navigation_path_segments == null:
+		printerr("'path' is invalid: ", path)
+	if next_navigation_path_segments == last_navigation.path_segments:
 		return Task.completed(path)
 
-	var navigation := {
-		"path_segments": XDUT_RouteHelper.parse_path(path),
+	var next_navigation := {
+		"path_segments": next_navigation_path_segments,
 		"exclusive": flags & _FLAG_EXCLUSIVE != 0,
 	}
-	if navigation.path_segments == null:
-		printerr("'path' is invalid: ", path)
-		return Task.canceled()
-	_navigation_stack.push_back(navigation)
-
-	return _test_path_and_create_completion(
-		navigation,
-		"goto")
+	_navigation_stack.push_back(next_navigation)
+	return _test_path_and_create_completion(next_navigation, "goto")
 
 func replace(
 	path: String,
 	flags := 0) -> Awaitable:
 
-	if path == get_current_path():
-		return Task.completed(path)
-
 	if _navigation_stack.is_empty():
 		printerr("Navigation stack is empty.")
 		return Task.canceled()
 
-	var navigation := _navigation_stack.back()
-	navigation.path_segments = XDUT_RouteHelper.parse_path(path)
-	navigation.exclusive = navigation.exclusive or flags & _FLAG_EXCLUSIVE != 0
-	_navigation_stack.pop_back()
-	_navigation_stack.push_back(navigation)
+	var last_navigation := _get_current_navigation()
+	var next_navigation_path_segments := XDUT_RouteHelper.parse_path(path, last_navigation.path_segments)
+	if next_navigation_path_segments == null:
+		printerr("'path' is invalid: ", path)
+	if next_navigation_path_segments == last_navigation.path_segments:
+		return Task.completed(path)
 
-	return _test_path_and_create_completion(
-		navigation,
-		"replace")
+	var next_navigation := {
+		"path_segments": next_navigation_path_segments,
+		"exclusive": last_navigation.exclusive or flags & _FLAG_EXCLUSIVE != 0,
+	}
+	_navigation_stack[_navigation_stack.size() - 1] = next_navigation
+	return _test_path_and_create_completion(next_navigation, "replace")
 
 func reload(flags := 0) -> Awaitable:
 	if _navigation_stack.is_empty():
 		return Task.canceled()
 
-	var navigation := _navigation_stack.back()
-	navigation.exclusive = navigation.exclusive or flags & _FLAG_EXCLUSIVE != 0
-
-	return _test_path_and_create_completion(
-		navigation,
-		"reload")
+	var next_navigation := _get_current_navigation()
+	next_navigation.exclusive = next_navigation.exclusive or flags & _FLAG_EXCLUSIVE != 0
+	return _test_path_and_create_completion(next_navigation, "reload")
 
 func can_back() -> bool:
 	return 1 < _navigation_stack.size()
@@ -125,14 +120,11 @@ func back(flags := 0) -> Awaitable:
 		printerr("Navigation stack is empty.")
 		return Task.canceled()
 
-	var navigation := _navigation_stack.back()
-	navigation.exclusive = navigation.exclusive or flags & _FLAG_EXCLUSIVE != 0
+	var next_navigation := _get_current_navigation()
 	_navigation_stack.pop_back()
-	navigation.path_segments = _navigation_stack.back().path_segments
-
-	return _test_path_and_create_completion(
-		navigation,
-		"back")
+	next_navigation.path_segments = _get_current_navigation().path_segments
+	next_navigation.exclusive = next_navigation.exclusive or flags & _FLAG_EXCLUSIVE != 0
+	return _test_path_and_create_completion(next_navigation, "back")
 
 #-------------------------------------------------------------------------------
 
@@ -150,6 +142,10 @@ var _navigation_stack: Array[Dictionary] = [
 var _next_group_etag := 0
 var _group_etag_stack: Array[int] = []
 var _group_map := {}
+
+func _get_current_navigation() -> Dictionary:
+	assert(not _navigation_stack.is_empty())
+	return _navigation_stack.back()
 
 func _create_completion(
 	path: String,
