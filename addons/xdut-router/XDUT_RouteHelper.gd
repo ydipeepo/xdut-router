@@ -39,31 +39,81 @@ static func get_route_segments(route: Node) -> PackedStringArray:
 	route_segments.reverse()
 	return route_segments
 
-static func parse_path(path: String) -> Variant:
-	var path_segments := PackedStringArray()
+static func parse_path(
+	path: String,
+	path_segments: PackedStringArray) -> Variant:
 
-	if path.is_empty() or path[0] != "/":
-		printerr("Invalid path: Empty path")
+	if path.is_empty():
 		return null
 
-	if path.length() >= 2:
-		var p: int
-		var q := 1
-		while true:
-			p = path.find("/", q)
-			var path_segment := path.substr(q, -1 if p == -1 else p - q)
-			if path_segment.is_empty():
-				printerr("Invalid path: Empty path segment '", path, "'")
+	# /
+	# /abc/def
+	# ./abc/def
+	# ../abc/def
+	#
+	# "a"~"z"
+	# "A"~"Z"
+	# "0"~"9"
+	# "-"
+	# "."
+	# ".."
+
+	var p := path.find("/")
+	var q := 0
+	var path_segment := path.substr(q, -1 if p == -1 else p - q)
+
+	match path_segment:
+		"":
+			path_segments = PackedStringArray()
+		".":
+			path_segments = path_segments.duplicate()
+		"..":
+			path_segments = path_segments.duplicate()
+			if path_segments.is_empty():
 				return null
-			if not _is_valid_segment(path_segment):
-				printerr("Invalid path: Bad path segment char '", path, "'")
-				return null
-			path_segments.push_back(path_segment)
-			if p == -1:
-				break
-			q = p + 1
+			path_segments.resize(path_segments.size() - 1)
+		_:
+			return null
+
+	while p != -1:
+		q = p + 1
+		p = path.find("/", q)
+		path_segment = path.substr(q, -1 if p == -1 else p - q)
+
+		match path_segment:
+			"..":
+				if path_segments.is_empty():
+					return null
+				path_segments.resize(path_segments.size() - 1)
+			_:
+				if not _is_valid_path_segment(path_segment):
+					return null
+				path_segments.push_back(path_segment)
 
 	return path_segments
+
+#	if path.is_empty() or path[0] != "/":
+#		printerr("Invalid path: Empty path")
+#		return null
+#
+#	if path.length() >= 2:
+#		var p: int
+#		var q := 1
+#		while true:
+#			p = path.find("/", q)
+#			var path_segment := path.substr(q, -1 if p == -1 else p - q)
+#			if path_segment.is_empty():
+#				printerr("Invalid path: Empty path segment '", path, "'")
+#				return null
+#			if not _is_valid_segment(path_segment):
+#				printerr("Invalid path: Bad path segment char '", path, "'")
+#				return null
+#			path_segments.push_back(path_segment)
+#			if p == -1:
+#				break
+#			q = p + 1
+#
+#	return path_segments
 
 static func parse_route_segment(route_segment: String) -> RegEx:
 	if route_segment.is_empty():
@@ -104,7 +154,7 @@ static func parse_route_segment(route_segment: String) -> RegEx:
 				if label.is_empty():
 					printerr("Invalid route segment: Empty label '", route_segment, "'")
 					return null
-				if not _is_valid_segment_label(label):
+				if not _is_valid_route_segment_label(label):
 					printerr("Invalid route segment: Bad label char '", route_segment, "'")
 					return null
 				if labels.has(label):
@@ -129,7 +179,7 @@ static func parse_route_segment(route_segment: String) -> RegEx:
 				if label_expr.is_empty():
 					printerr("Invalid route segment: Empty label expression '", route_segment, "'")
 					return null
-				if not _is_valid_segment_label_expr(label_expr):
+				if not _is_valid_route_segment_label_expr(label_expr):
 					printerr("Invalid route segment: Bad label expression char '", route_segment, "'")
 					return null
 				pattern += label_expr + ")"
@@ -147,7 +197,7 @@ static func parse_route_segment(route_segment: String) -> RegEx:
 					if label.is_empty():
 						printerr("Invalid route segment: Empty label '", route_segment, "'")
 						return null
-					if not _is_valid_segment_label(label):
+					if not _is_valid_route_segment_label(label):
 						printerr("Invalid route segment: Bad label char '", route_segment, "'")
 						return null
 					pattern += "(?<" + label + ">\\w+)"
@@ -157,7 +207,7 @@ static func parse_route_segment(route_segment: String) -> RegEx:
 				state = 0
 
 		if state == 0:
-			if not _is_valid_segment(c):
+			if not _is_valid_route_segment(c):
 				printerr("Invalid route segment: Bad segment char '", route_segment, "'")
 				return null
 			pattern += c
@@ -173,7 +223,7 @@ static func parse_route_segment(route_segment: String) -> RegEx:
 		if label.is_empty():
 			printerr("Invalid route segment: Empty label '", route_segment, "'")
 			return null
-		if not _is_valid_segment_label(label):
+		if not _is_valid_route_segment_label(label):
 			printerr("Invalid route segment: Bad label char '", route_segment, "'")
 			return null
 		if labels.has(label):
@@ -278,37 +328,52 @@ const _ENTER_PATH_METHOD_NAME := &"_enter_path"
 const _EXIT_PATH_METHOD_NAME := &"_exit_path"
 const _POST_EXIT_PATH_METHOD_NAME := &"_post_exit_path"
 
-const _VALID_SEGMENT_CHARS: PackedStringArray = [
+const _VALID_PATH_SEGMENT_CHARS: PackedStringArray = [
 	"-",
 	"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
 	"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
 	"_",
 	"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
 ]
-const _VALID_SEGMENT_LABEL_CHARS: PackedStringArray = [
+const _VALID_ROUTE_SEGMENT_CHARS: PackedStringArray = [
+	"-",
+	"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+	"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+	"_",
+	"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+]
+const _VALID_ROUTE_SEGMENT_LABEL_CHARS: PackedStringArray = [
 	"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
 	"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
 	"_",
 	"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
 ]
 
-static func _is_valid_segment(s: String) -> bool:
+static func _is_valid_path_segment(s: String) -> bool:
 	if s.is_empty():
 		return false
 	for c: String in s:
-		if not _VALID_SEGMENT_CHARS.has(c):
+		if not _VALID_PATH_SEGMENT_CHARS.has(c):
 			return false
 	return true
 
-static func _is_valid_segment_label(s: String) -> bool:
+static func _is_valid_route_segment(s: String) -> bool:
 	if s.is_empty():
 		return false
 	for c: String in s:
-		if not _VALID_SEGMENT_LABEL_CHARS.has(c):
+		if not _VALID_ROUTE_SEGMENT_CHARS.has(c):
 			return false
 	return true
 
-static func _is_valid_segment_label_expr(s: String) -> bool:
+static func _is_valid_route_segment_label(s: String) -> bool:
+	if s.is_empty():
+		return false
+	for c: String in s:
+		if not _VALID_ROUTE_SEGMENT_LABEL_CHARS.has(c):
+			return false
+	return true
+
+static func _is_valid_route_segment_label_expr(s: String) -> bool:
 	return not s.is_empty()
 
 static func _extract_child_enter_calls(
