@@ -131,6 +131,13 @@ theme_override_font_sizes/font_size = 12
 text = "Timing"
 alignment = 0
 
+[node name="Goto_View" type="Button" parent="Container/Content/Navigator"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "View"
+alignment = 0
+
 [node name="Separator" type="VSeparator" parent="Container/Content"]
 modulate = Color(1, 1, 1, 0.247059)
 custom_minimum_size = Vector2(32, 0)
@@ -205,9 +212,23 @@ flags = 12
 animations = Array[ExtResource("3_cyaqf")]([SubResource("Resource_8jqp5")])
 route_segment = "timing"
 
+[node name="Route_View" type="Control" parent="Container/Content/Routes"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("7_4cj4v")
+package_path = "res://routes/View.tscn"
+flags = 12
+animations = Array[ExtResource("3_cyaqf")]([SubResource("Resource_8jqp5")])
+route_segment = "view"
+
 [connection signal="pressed" from="Container/Content/Navigator/Back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="Container/Content/Navigator/Goto_Route1" to="." method="_on_goto_route_1_pressed"]
 [connection signal="pressed" from="Container/Content/Navigator/Goto_Route2" to="." method="_on_goto_route_2_pressed"]
 [connection signal="pressed" from="Container/Content/Navigator/Goto_PackageRoute" to="." method="_on_goto_package_route_pressed"]
 [connection signal="pressed" from="Container/Content/Navigator/Goto_PatternMatch" to="." method="_on_goto_pattern_match_pressed"]
 [connection signal="pressed" from="Container/Content/Navigator/Goto_Timing" to="." method="_on_goto_timing_pressed"]
+[connection signal="pressed" from="Container/Content/Navigator/Goto_View" to="." method="_on_goto_view_pressed"]

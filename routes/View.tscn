@@ -1,0 +1,401 @@
+[gd_scene load_steps=28 format=3 uid="uid://bdf4swo6wvs44"]
+
+[ext_resource type="Script" path="res://addons/xdut-router/PackageRouteControl.gd" id="1_021rg"]
+[ext_resource type="Script" path="res://routes/View.gd" id="1_rhcse"]
+[ext_resource type="FontFile" uid="uid://b4qkeyfiegw8b" path="res://assets/font/super-cartoon.ttf" id="2_cr5a0"]
+[ext_resource type="Script" uid="uid://chvgnddrgdcfu" path="res://addons/xdut-router/RouteAnimationBase.gd" id="3_in1pc"]
+[ext_resource type="Script" uid="uid://dhmrcfjn08nva" path="res://addons/xdut-router-motion/TweenMotionRouteTransition.gd" id="4_cb2u2"]
+[ext_resource type="Script" uid="uid://fu3v6ly7kmkq" path="res://addons/xdut-router-motion/MotionRouteAnimation.gd" id="5_nkwu0"]
+[ext_resource type="Script" uid="uid://dhh7qy1cmkncl" path="res://addons/xdut-router-motion/Vector2MotionRouteValue.gd" id="6_o525f"]
+[ext_resource type="Script" uid="uid://4c6tq5gvu5it" path="res://addons/xdut-router-motion/FloatMotionRouteValue.gd" id="7_au8fh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cr0r2"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Resource" id="Resource_5fbbb"]
+script = ExtResource("4_cb2u2")
+trans = 4
+ease = 1
+duration = 0.3
+
+[sub_resource type="Resource" id="Resource_5aeoy"]
+script = ExtResource("4_cb2u2")
+trans = 4
+ease = 0
+duration = 0.3
+
+[sub_resource type="Resource" id="Resource_nkpdi"]
+script = ExtResource("6_o525f")
+value_before_enter = Vector2(0.5, 0.5)
+value = Vector2(1, 1)
+value_after_exit = Vector2(0.5, 0.5)
+delay = 0.0
+process = 0
+inherit_value_before_enter = false
+inherit_value_before_exit = true
+
+[sub_resource type="Resource" id="Resource_bsnyd"]
+script = ExtResource("5_nkwu0")
+node_path = "."
+node_property_key = "scale"
+value = SubResource("Resource_nkpdi")
+enter_transition = SubResource("Resource_5fbbb")
+exit_transition = SubResource("Resource_5aeoy")
+
+[sub_resource type="Resource" id="Resource_7vygf"]
+script = ExtResource("4_cb2u2")
+trans = 4
+ease = 1
+duration = 0.3
+
+[sub_resource type="Resource" id="Resource_57q4c"]
+script = ExtResource("4_cb2u2")
+trans = 4
+ease = 0
+duration = 0.3
+
+[sub_resource type="Resource" id="Resource_vubjd"]
+script = ExtResource("7_au8fh")
+value_before_enter = 0.0
+value = 1.0
+value_after_exit = 0.0
+delay = 0.0
+process = 0
+inherit_value_before_enter = false
+inherit_value_before_exit = true
+
+[sub_resource type="Resource" id="Resource_prssu"]
+script = ExtResource("5_nkwu0")
+node_path = "."
+node_property_key = "modulate:a"
+value = SubResource("Resource_vubjd")
+enter_transition = SubResource("Resource_7vygf")
+exit_transition = SubResource("Resource_57q4c")
+
+[sub_resource type="LabelSettings" id="LabelSettings_wceaa"]
+font = ExtResource("2_cr5a0")
+font_size = 24
+font_color = Color(1, 1, 0, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="Resource" id="Resource_resuh"]
+script = ExtResource("5_nkwu0")
+node_path = "."
+node_property_key = "scale"
+value = SubResource("Resource_nkpdi")
+enter_transition = SubResource("Resource_5fbbb")
+exit_transition = SubResource("Resource_5aeoy")
+
+[sub_resource type="Resource" id="Resource_wompw"]
+script = ExtResource("5_nkwu0")
+node_path = "."
+node_property_key = "modulate:a"
+value = SubResource("Resource_vubjd")
+enter_transition = SubResource("Resource_7vygf")
+exit_transition = SubResource("Resource_57q4c")
+
+[sub_resource type="LabelSettings" id="LabelSettings_v4my6"]
+font = ExtResource("2_cr5a0")
+font_size = 24
+font_color = Color(0, 1, 1, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="Resource" id="Resource_gw3m3"]
+script = ExtResource("5_nkwu0")
+node_path = "."
+node_property_key = "scale"
+value = SubResource("Resource_nkpdi")
+enter_transition = SubResource("Resource_5fbbb")
+exit_transition = SubResource("Resource_5aeoy")
+
+[sub_resource type="Resource" id="Resource_sjcnc"]
+script = ExtResource("5_nkwu0")
+node_path = "."
+node_property_key = "modulate:a"
+value = SubResource("Resource_vubjd")
+enter_transition = SubResource("Resource_7vygf")
+exit_transition = SubResource("Resource_57q4c")
+
+[sub_resource type="LabelSettings" id="LabelSettings_uqgv8"]
+font = ExtResource("2_cr5a0")
+font_size = 24
+font_color = Color(1, 0, 1, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qvl0g"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_plqen"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4xlth"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[node name="View" type="CenterContainer"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+localize_numeral_system = false
+script = ExtResource("1_rhcse")
+
+[node name="Content" type="VBoxContainer" parent="."]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(384, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+localize_numeral_system = false
+theme_override_constants/separation = 32
+
+[node name="Panel" type="PanelContainer" parent="Content"]
+auto_translate_mode = 2
+clip_children = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(384, 290)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_styles/panel = SubResource("StyleBoxFlat_cr0r2")
+
+[node name="Margin" type="MarginContainer" parent="Content/Panel"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 2
+localize_numeral_system = false
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Route_A" type="Control" parent="Content/Panel/Margin"]
+unique_name_in_owner = true
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 2
+localize_numeral_system = false
+script = ExtResource("1_021rg")
+package_path = "res://routes/View_Frame.tscn"
+animations = Array[ExtResource("3_in1pc")]([SubResource("Resource_bsnyd"), SubResource("Resource_prssu")])
+route_segment = "a"
+
+[node name="Label" type="Label" parent="Content/Panel/Margin/Route_A"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+localize_numeral_system = false
+text = "/a"
+label_settings = SubResource("LabelSettings_wceaa")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Route_B" type="Control" parent="Content/Panel/Margin"]
+unique_name_in_owner = true
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 2
+localize_numeral_system = false
+script = ExtResource("1_021rg")
+package_path = "res://routes/View_Frame.tscn"
+animations = Array[ExtResource("3_in1pc")]([SubResource("Resource_resuh"), SubResource("Resource_wompw")])
+route_segment = "b"
+
+[node name="Label" type="Label" parent="Content/Panel/Margin/Route_B"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+localize_numeral_system = false
+text = "/b"
+label_settings = SubResource("LabelSettings_v4my6")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Route_C" type="Control" parent="Content/Panel/Margin"]
+unique_name_in_owner = true
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 2
+localize_numeral_system = false
+script = ExtResource("1_021rg")
+package_path = "res://routes/View_Frame.tscn"
+animations = Array[ExtResource("3_in1pc")]([SubResource("Resource_gw3m3"), SubResource("Resource_sjcnc")])
+route_segment = "c"
+
+[node name="Label" type="Label" parent="Content/Panel/Margin/Route_C"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+localize_numeral_system = false
+text = "/c"
+label_settings = SubResource("LabelSettings_uqgv8")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Navigator" type="HBoxContainer" parent="Content"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 2
+localize_numeral_system = false
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Goto" type="Button" parent="Content/Navigator"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_cr5a0")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_qvl0g")
+theme_override_styles/hover = SubResource("StyleBoxFlat_plqen")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_4xlth")
+theme_override_styles/normal = SubResource("StyleBoxFlat_plqen")
+text = "/"
+
+[node name="Goto_A" type="Button" parent="Content/Navigator"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_cr5a0")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_qvl0g")
+theme_override_styles/hover = SubResource("StyleBoxFlat_plqen")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_4xlth")
+theme_override_styles/normal = SubResource("StyleBoxFlat_plqen")
+text = "/a"
+
+[node name="Goto_B" type="Button" parent="Content/Navigator"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_cr5a0")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_qvl0g")
+theme_override_styles/hover = SubResource("StyleBoxFlat_plqen")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_4xlth")
+theme_override_styles/normal = SubResource("StyleBoxFlat_plqen")
+text = "/b"
+
+[node name="Goto_C" type="Button" parent="Content/Navigator"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_cr5a0")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_qvl0g")
+theme_override_styles/hover = SubResource("StyleBoxFlat_plqen")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_4xlth")
+theme_override_styles/normal = SubResource("StyleBoxFlat_plqen")
+text = "/c"
+
+[node name="Note" type="Label" parent="Content"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+localize_numeral_system = false
+theme_override_font_sizes/font_size = 12
+text = "View ノードを通してサブシーン内の任意の位置にルート子ノードを展開できます。"
+horizontal_alignment = 1
+autowrap_mode = 1
+
+[connection signal="resized" from="Content/Panel/Margin/Route_A" to="." method="_on_route_a_resized"]
+[connection signal="resized" from="Content/Panel/Margin/Route_B" to="." method="_on_route_b_resized"]
+[connection signal="resized" from="Content/Panel/Margin/Route_C" to="." method="_on_route_c_resized"]
+[connection signal="pressed" from="Content/Navigator/Goto" to="." method="_on_goto_pressed"]
+[connection signal="pressed" from="Content/Navigator/Goto_A" to="." method="_on_goto_a_pressed"]
+[connection signal="pressed" from="Content/Navigator/Goto_B" to="." method="_on_goto_b_pressed"]
+[connection signal="pressed" from="Content/Navigator/Goto_C" to="." method="_on_goto_c_pressed"]

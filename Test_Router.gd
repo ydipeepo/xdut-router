@@ -27,3 +27,6 @@ func _on_goto_timing_pressed() -> void:
 
 func _on_goto_child_notification_pressed() -> void:
 	Router.goto("/child-notification")
+
+func _on_goto_view_pressed() -> void:
+	Router.goto("/view")
