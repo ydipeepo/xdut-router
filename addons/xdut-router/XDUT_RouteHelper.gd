@@ -16,28 +16,35 @@ static func to_path(path_segments: PackedStringArray) -> String:
 		path += "/".join(path_segments)
 	return path
 
-static func is_route(route: Node) -> bool:
+static func is_route_node(node: Node) -> bool:
 	return \
-		route != null and \
-		route.has_meta(ROUTE_SEGMENT_META_KEY)
+		node != null and \
+		node.has_meta(ROUTE_SEGMENT_META_KEY)
 
-static func get_route(route: Node) -> String:
-	return "/" + "/".join(get_route_segments(route))
+static func get_route_node(node: Node) -> Node:
+	while node != null:
+		if is_route_node(node):
+			return node
+		node = node.get_parent()
+	return null
 
-static func set_route(
-	route: Node,
-	route_segment: String) -> void:
-
-	route.set_meta(ROUTE_SEGMENT_META_KEY, route_segment)
-
-static func get_route_segments(route: Node) -> PackedStringArray:
+static func get_route_segments(node: Node) -> PackedStringArray:
 	var route_segments: Array[String] = []
-	while route != null:
-		if is_route(route):
-			route_segments.push_back(route.get_meta(ROUTE_SEGMENT_META_KEY))
-		route = route.get_parent()
+	while node != null:
+		if is_route_node(node):
+			route_segments.push_back(node.get_meta(ROUTE_SEGMENT_META_KEY))
+		node = node.get_parent()
 	route_segments.reverse()
 	return route_segments
+
+static func get_route(node: Node) -> String:
+	return "/" + "/".join(get_route_segments(node))
+
+static func set_route(
+	node: Node,
+	route_segment: String) -> void:
+
+	node.set_meta(ROUTE_SEGMENT_META_KEY, route_segment)
 
 static func parse_path(
 	path: String,
@@ -45,18 +52,6 @@ static func parse_path(
 
 	if path.is_empty():
 		return null
-
-	# /
-	# /abc/def
-	# ./abc/def
-	# ../abc/def
-	#
-	# "a"~"z"
-	# "A"~"Z"
-	# "0"~"9"
-	# "-"
-	# "."
-	# ".."
 
 	var p := path.find("/")
 	var q := 0
@@ -91,29 +86,6 @@ static func parse_path(
 				path_segments.push_back(path_segment)
 
 	return path_segments
-
-#	if path.is_empty() or path[0] != "/":
-#		printerr("Invalid path: Empty path")
-#		return null
-#
-#	if path.length() >= 2:
-#		var p: int
-#		var q := 1
-#		while true:
-#			p = path.find("/", q)
-#			var path_segment := path.substr(q, -1 if p == -1 else p - q)
-#			if path_segment.is_empty():
-#				printerr("Invalid path: Empty path segment '", path, "'")
-#				return null
-#			if not _is_valid_segment(path_segment):
-#				printerr("Invalid path: Bad path segment char '", path, "'")
-#				return null
-#			path_segments.push_back(path_segment)
-#			if p == -1:
-#				break
-#			q = p + 1
-#
-#	return path_segments
 
 static func parse_route_segment(route_segment: String) -> RegEx:
 	if route_segment.is_empty():
@@ -381,7 +353,7 @@ static func _extract_child_enter_calls(
 	route_params: Dictionary,
 	calls: Array[Callable]) -> void:
 
-	if not is_route(node):
+	if not is_route_node(node):
 		extract_enter_call(node, route_params, calls)
 		for child_node: Node in node.get_children():
 			_extract_child_enter_calls(child_node, route_params, calls)
@@ -390,7 +362,7 @@ static func _extract_child_exit_calls(
 	node: Node,
 	calls: Array[Callable]) -> void:
 
-	if not is_route(node):
+	if not is_route_node(node):
 		for child_index: int in range(node.get_child_count() - 1, -1, -1):
 			var child_node := node.get_child(child_index)
 			_extract_child_exit_calls(child_node, calls)

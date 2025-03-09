@@ -46,10 +46,18 @@ func _enter_tree() -> void:
 	add_custom_type("PackageRoute2D", "Node2D", preload("PackageRoute2D.gd"), preload("PackageRoute2D.png"))
 	add_custom_type("PackageRoute3D", "Node3D", preload("PackageRoute3D.gd"), preload("PackageRoute3D.png"))
 	add_custom_type("PackageRouteControl", "Control", preload("PackageRouteControl.gd"), preload("PackageRouteControl.png"))
+	add_custom_type("View", "Node", preload("View.gd"), preload("View.png"))
+	add_custom_type("View2D", "Node2D", preload("View2D.gd"), preload("View2D.png"))
+	add_custom_type("View3D", "Node3D", preload("View3D.gd"), preload("View3D.png"))
+	add_custom_type("ViewControl", "Control", preload("ViewControl.gd"), preload("ViewControl.png"))
 
 	_print("Activated.")
 
 func _exit_tree() -> void:
+	remove_custom_type("ViewControl")
+	remove_custom_type("View3D")
+	remove_custom_type("View2D")
+	remove_custom_type("View")
 	remove_custom_type("PackageRouteControl")
 	remove_custom_type("PackageRoute3D")
 	remove_custom_type("PackageRoute2D")

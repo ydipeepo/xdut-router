@@ -1,11 +1,11 @@
 [gd_scene load_steps=11 format=3 uid="uid://doif1gwh18s1f"]
 
-[ext_resource type="Script" uid="uid://dop8u47tkl8cq" path="res://Test_Router.gd" id="1_m7jxf"]
+[ext_resource type="Script" path="res://Test_Router.gd" id="1_m7jxf"]
 [ext_resource type="Script" uid="uid://chvgnddrgdcfu" path="res://addons/xdut-router/RouteAnimationBase.gd" id="3_cyaqf"]
 [ext_resource type="Script" uid="uid://dhmrcfjn08nva" path="res://addons/xdut-router-motion/TweenMotionRouteTransition.gd" id="4_t4hmn"]
 [ext_resource type="Script" uid="uid://fu3v6ly7kmkq" path="res://addons/xdut-router-motion/MotionRouteAnimation.gd" id="5_dxlmv"]
 [ext_resource type="Script" uid="uid://4c6tq5gvu5it" path="res://addons/xdut-router-motion/FloatMotionRouteValue.gd" id="6_5n1yy"]
-[ext_resource type="Script" uid="uid://cspc7h1lrtvra" path="res://addons/xdut-router/PackageRouteControl.gd" id="7_4cj4v"]
+[ext_resource type="Script" path="res://addons/xdut-router/PackageRouteControl.gd" id="7_4cj4v"]
 
 [sub_resource type="Resource" id="Resource_aglw1"]
 script = ExtResource("4_t4hmn")
