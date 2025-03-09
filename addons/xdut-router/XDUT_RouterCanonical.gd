@@ -50,7 +50,7 @@ func unregister(
 	route: Node,
 	flags := 0) -> Awaitable:
 
-	if not XDUT_RouteHelper.is_route(route):
+	if not XDUT_RouteHelper.is_route_node(route):
 		printerr("'", route, "' is not valid route.")
 		return Task.canceled()
 

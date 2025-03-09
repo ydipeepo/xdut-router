@@ -1,0 +1,56 @@
+[gd_scene load_steps=3 format=3 uid="uid://d1hf5qhswxdv2"]
+
+[ext_resource type="Script" path="res://addons/xdut-router/ViewControl.gd" id="1_0k8yn"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8e6pq"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.333333, 0.333333, 0.333333, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[node name="View_Frame" type="PanelContainer"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+localize_numeral_system = false
+theme_override_styles/panel = SubResource("StyleBoxFlat_8e6pq")
+
+[node name="Margin" type="MarginContainer" parent="."]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 2
+localize_numeral_system = false
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Content" type="VBoxContainer" parent="Margin"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 2
+localize_numeral_system = false
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="View" type="Control" parent="Margin/Content"]
+auto_translate_mode = 2
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 2
+localize_numeral_system = false
+script = ExtResource("1_0k8yn")
