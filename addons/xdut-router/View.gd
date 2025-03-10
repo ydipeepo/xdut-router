@@ -24,8 +24,8 @@ func _enter_tree() -> void:
 
 	if _route_node.has_signal(&"entering_path"):
 		_route_node.entering_path.connect(_on_entering_path)
-	if _route_node.has_signal(&"exiting_path"):
-		_route_node.exiting_path.connect(_on_exiting_path)
+	if _route_node.has_signal(&"exited_path"):
+		_route_node.exited_path.connect(_on_exited_path)
 
 func _exit_tree() -> void:
 	if _route_node == null:
@@ -33,8 +33,8 @@ func _exit_tree() -> void:
 
 	if _route_node.has_signal(&"entering_path"):
 		_route_node.entering_path.disconnect(_on_entering_path)
-	if _route_node.has_signal(&"exiting_path"):
-		_route_node.exiting_path.disconnect(_on_exiting_path)
+	if _route_node.has_signal(&"exited_path"):
+		_route_node.exited_path.disconnect(_on_exited_path)
 
 func _on_entering_path() -> void:
 	for node: Node in _route_node.get_children():
@@ -42,13 +42,13 @@ func _on_entering_path() -> void:
 		if node_owner == _route_node.owner:
 			if call_ready:
 				node.request_ready()
-			node.reparent(self, false)
+			node.reparent(self)
 			if not keep_owner:
 				node.owner = owner
 
-func _on_exiting_path() -> void:
+func _on_exited_path() -> void:
 	for node: Node in get_children():
-		node.reparent(_route_node, false)
+		node.reparent(_route_node)
 		if not keep_owner:
 			node.owner = _route_node.owner
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://d1hf5qhswxdv2"]
 
-[ext_resource type="Script" path="res://addons/xdut-router/ViewControl.gd" id="1_0k8yn"]
+[ext_resource type="Script" uid="uid://dr0xwpl2mri5s" path="res://addons/xdut-router/ViewControl.gd" id="1_0k8yn"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8e6pq"]
 bg_color = Color(1, 1, 1, 1)
