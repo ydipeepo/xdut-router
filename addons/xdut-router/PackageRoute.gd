@@ -54,20 +54,13 @@ var _auto_free: int = AUTO_FREE_NODE_AND_PACKAGE
 var _package_path: String
 var _package_node: Node
 var _package: PackedScene
-var _outer_entrants: int
-var _pre_enter_task: Task
-var _post_exit_task: Task
 
-func _pre_enter_path_core(
+func _pre_enter_path(
 	route_params: Dictionary,
 	group_etag: int) -> void:
 
 	var start: int
 	var delta: int
-
-	#
-	# パッケージ読み込み
-	#
 
 	if _package == null:
 		assert(_package_node == null)
@@ -83,12 +76,9 @@ func _pre_enter_path_core(
 		_package = package
 
 		delta = Time.get_ticks_usec() - start
+		
 		if get_navigation_verbose():
 			print("\tPackage load [", group_etag, "]: ", _package_path, ", ", delta / 1000.0, "msec")
-
-	#
-	# パッケージ追加
-	#
 
 	if _package_node == null:
 		assert(_package != null)
@@ -103,10 +93,11 @@ func _pre_enter_path_core(
 		restore_group()
 
 		delta = Time.get_ticks_usec() - start
+		
 		if get_navigation_verbose():
 			print("\tPackage tree [", group_etag, "]: ", _package_path, ", ", delta / 1000.0, "msec")
 
-func _post_exit_path_core(group_etag: int) -> void:
+func _post_exit_path(group_etag: int) -> void:
 	match _auto_free:
 		AUTO_FREE_NODE, \
 		AUTO_FREE_NODE_AND_PACKAGE:
@@ -120,63 +111,6 @@ func _post_exit_path_core(group_etag: int) -> void:
 	match _auto_free:
 		AUTO_FREE_NODE_AND_PACKAGE:
 			_package = null
-
-func _pre_enter_path(
-	route_params: Dictionary,
-	group_etag: int) -> void:
-
-	var outer_entrants := _outer_entrants
-	_outer_entrants += 1
-
-	if outer_entrants < 0:
-		return
-
-	if _post_exit_task != null:
-		await _post_exit_task.wait()
-	_post_exit_task = null
-
-	if outer_entrants == 0:
-		_pre_enter_task = Task.from_method(_pre_enter_path_core.bind(route_params, group_etag))
-	if _pre_enter_task != null:
-		await _pre_enter_task.wait()
-	_pre_enter_task = null
-
-func _enter_path(route_params: Dictionary) -> void:
-	if _outer_entrants <= 0:
-		return
-
-	if _pre_enter_task != null:
-		await _pre_enter_task.wait()
-	_pre_enter_task = null
-
-	await super(route_params)
-
-func _exit_path() -> void:
-	if _outer_entrants <= 0:
-		return
-
-	if _pre_enter_task != null:
-		await _pre_enter_task.wait()
-	_pre_enter_task = null
-
-	await super()
-
-func _post_exit_path(group_etag: int) -> void:
-	_outer_entrants -= 1
-	var outer_entrants := _outer_entrants
-
-	if outer_entrants < 0:
-		return
-
-	if _pre_enter_task != null:
-		await _pre_enter_task.wait()
-	_pre_enter_task = null
-
-	if outer_entrants == 0:
-		_post_exit_task = Task.from_method(_post_exit_path_core.bind(group_etag))
-	if _post_exit_task != null:
-		await _post_exit_task.wait()
-	_post_exit_task = null
 
 func _to_string() -> String:
 	return "<PackageRoute#%s>" % _route_segment

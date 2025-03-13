@@ -213,85 +213,81 @@ static func parse_route_segment(route_segment: String) -> RegEx:
 
 	return re
 
-static func extract_pre_enter_call(
-	route: Node,
+static func has_pre_enter_path(route_node: Node) -> bool:
+	if route_node.has_method(_PRE_ENTER_PATH_METHOD_NAME):
+		match route_node.get_method_argument_count(_PRE_ENTER_PATH_METHOD_NAME):
+			0, \
+			1, \
+			2: return true
+	return false
+
+static func has_enter_path(route_node: Node) -> bool:
+	if route_node.has_method(_ENTER_PATH_METHOD_NAME):
+		match route_node.get_method_argument_count(_ENTER_PATH_METHOD_NAME):
+			0, \
+			1: return true
+	return false
+
+static func has_exit_path(route_node: Node) -> bool:
+	if route_node.has_method(_EXIT_PATH_METHOD_NAME):
+		match route_node.get_method_argument_count(_EXIT_PATH_METHOD_NAME):
+			0: return true
+	return false
+
+static func has_post_exit_path(route_node: Node) -> bool:
+	if route_node.has_method(_POST_EXIT_PATH_METHOD_NAME):
+		match route_node.get_method_argument_count(_POST_EXIT_PATH_METHOD_NAME):
+			0, \
+			1: return true
+	return false
+
+static func get_pre_enter_path(
+	route_node: Node,
 	route_params: Dictionary,
-	etag: int,
-	calls: Array[Callable]) -> void:
+	group_etag: int) -> Callable:
 
-	if route.has_method(_PRE_ENTER_PATH_METHOD_NAME):
-		match route.get_method_argument_count(_PRE_ENTER_PATH_METHOD_NAME):
-			0: calls.push_back(route._pre_enter_path)
-			1: calls.push_back(route._pre_enter_path.bind(route_params))
-			2: calls.push_back(route._pre_enter_path.bind(route_params, etag))
-			_: printerr("Invalid method '", _PRE_ENTER_PATH_METHOD_NAME, "' signature at: ", route)
+	if route_node.has_method(_PRE_ENTER_PATH_METHOD_NAME):
+		match route_node.get_method_argument_count(_PRE_ENTER_PATH_METHOD_NAME):
+			0: return route_node._pre_enter_path
+			1: return route_node._pre_enter_path.bind(route_params)
+			2: return route_node._pre_enter_path.bind(route_params, group_etag)
+		printerr("Invalid '", _PRE_ENTER_PATH_METHOD_NAME, "' method signature at: ", route_node)
+	return Callable()
 
-static func extract_enter_call(
-	route: Node,
+static func get_enter_path(
+	route_node: Node,
 	route_params: Dictionary,
-	calls: Array[Callable]) -> void:
+	route_cancel: Cancel) -> Callable:
 
-	if route.has_method(_ENTER_PATH_METHOD_NAME):
-		match route.get_method_argument_count(_ENTER_PATH_METHOD_NAME):
-			0: calls.push_back(route._enter_path)
-			1: calls.push_back(route._enter_path.bind(route_params))
-			_: printerr("Invalid method '", _ENTER_PATH_METHOD_NAME, "' signature at: ", route)
+	if route_node.has_method(_ENTER_PATH_METHOD_NAME):
+		match route_node.get_method_argument_count(_ENTER_PATH_METHOD_NAME):
+			0: return route_node._enter_path
+			1: return route_node._enter_path.bind(route_params)
+			2: return route_node._enter_path.bind(route_params, route_cancel)
+		printerr("Invalid '", _ENTER_PATH_METHOD_NAME, "' method signature at: ", route_node)
+	return Callable()
 
-static func extract_exit_call(
-	route: Node,
-	calls: Array[Callable]) -> void:
+static func get_exit_path(
+	route_node: Node,
+	route_cancel: Cancel) -> Callable:
 
-	if route.has_method(_EXIT_PATH_METHOD_NAME):
-		match route.get_method_argument_count(_EXIT_PATH_METHOD_NAME):
-			0: calls.push_back(route._exit_path)
-			_: printerr("Invalid method '", _EXIT_PATH_METHOD_NAME, "' signature at: ", route)
+	if route_node.has_method(_EXIT_PATH_METHOD_NAME):
+		match route_node.get_method_argument_count(_EXIT_PATH_METHOD_NAME):
+			0: return route_node._exit_path
+			1: return route_node._exit_path.bind(route_cancel)
+		printerr("Invalid '", _EXIT_PATH_METHOD_NAME, "' method signature at: ", route_node)
+	return Callable()
 
-static func extract_post_exit_call(
-	route: Node,
-	etag: int,
-	calls: Array[Callable]) -> void:
+static func get_post_exit_path(
+	route_node: Node,
+	group_etag: int) -> Callable:
 
-	if route.has_method(_POST_EXIT_PATH_METHOD_NAME):
-		match route.get_method_argument_count(_POST_EXIT_PATH_METHOD_NAME):
-			0: calls.push_back(route._post_exit_path)
-			1: calls.push_back(route._post_exit_path.bind(etag))
-			_: printerr("Invalid method '", _POST_EXIT_PATH_METHOD_NAME, "' signature at: ", route)
-
-static func wait_animate_and_child_enter_calls(
-	route: Node,
-	route_params: Dictionary,
-	notify_children: bool) -> void:
-
-	var calls: Array[Callable] = []
-
-	if "animations" in route:
-		for animation: RouteAnimationBase in route.animations:
-			if animation != null:
-				calls.push_back(animation.animate_enter.bind(route))
-
-	if notify_children:
-		for child_node: Node in route.get_children():
-			_extract_child_enter_calls(child_node, route_params, calls)
-
-	await Task.wait_all(calls)
-
-static func wait_animate_and_child_exit_calls(
-	route: Node,
-	notify_children: bool) -> void:
-
-	var calls: Array[Callable] = []
-
-	if notify_children:
-		for child_index: int in range(route.get_child_count() - 1, -1, -1):
-			var child_node := route.get_child(child_index)
-			_extract_child_exit_calls(child_node, calls)
-
-	if "animations" in route:
-		for animation: RouteAnimationBase in route.animations:
-			if animation != null:
-				calls.push_back(animation.animate_exit.bind(route))
-
-	await Task.wait_all(calls)
+	if route_node.has_method(_POST_EXIT_PATH_METHOD_NAME):
+		match route_node.get_method_argument_count(_POST_EXIT_PATH_METHOD_NAME):
+			0: return route_node._post_exit_path
+			1: return route_node._post_exit_path.bind(group_etag)
+		printerr("Invalid '", _POST_EXIT_PATH_METHOD_NAME, "' method signature at: ", route_node)
+	return Callable()
 
 #-------------------------------------------------------------------------------
 
@@ -347,23 +343,3 @@ static func _is_valid_route_segment_label(s: String) -> bool:
 
 static func _is_valid_route_segment_label_expr(s: String) -> bool:
 	return not s.is_empty()
-
-static func _extract_child_enter_calls(
-	node: Node,
-	route_params: Dictionary,
-	calls: Array[Callable]) -> void:
-
-	if not is_route_node(node):
-		extract_enter_call(node, route_params, calls)
-		for child_node: Node in node.get_children():
-			_extract_child_enter_calls(child_node, route_params, calls)
-
-static func _extract_child_exit_calls(
-	node: Node,
-	calls: Array[Callable]) -> void:
-
-	if not is_route_node(node):
-		for child_index: int in range(node.get_child_count() - 1, -1, -1):
-			var child_node := node.get_child(child_index)
-			_extract_child_exit_calls(child_node, calls)
-		extract_exit_call(node, calls)

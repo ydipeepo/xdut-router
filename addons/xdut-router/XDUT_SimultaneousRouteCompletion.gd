@@ -6,7 +6,7 @@ class_name XDUT_SimultaneousRouteCompletion extends TaskBase
 
 func cleanup() -> void:
 	if is_instance_valid(_router_canonical):
-		_router_canonical.cleanup_group(_group.etag)
+		_router_canonical.cleanup_group(_group.group_etag)
 	_router_canonical = null
 
 	super()
@@ -54,17 +54,17 @@ func _perform() -> void:
 	# PRE_ENTER
 	#
 
-	_group.get_pre_enter_calls(calls)
+	_group.bundle_pre_enter_path(calls)
 	while not calls.is_empty():
 		await Task.wait_all(calls); calls.clear()
-		_group.get_pre_enter_calls(calls)
+		_group.bundle_pre_enter_path(calls)
 
 	#
 	# EXIT, ENTER
 	#
 
-	_group.get_exit_calls(calls)
-	_group.get_enter_calls(calls)
+	_group.bundle_exit_path(calls)
+	_group.bundle_enter_path(calls)
 	if not calls.is_empty():
 		await Task.wait_all(calls); calls.clear()
 
@@ -72,10 +72,10 @@ func _perform() -> void:
 	# POST_EXIT
 	#
 
-	_group.get_post_exit_calls(calls)
+	_group.bundle_post_exit_path(calls)
 	while not calls.is_empty():
 		await Task.wait_all(calls); calls.clear()
-		_group.get_post_exit_calls(calls)
+		_group.bundle_post_exit_path(calls)
 
 	#
 	# 通知

@@ -17,10 +17,13 @@ class_name AnimationPlayerRouteAnimation extends RouteAnimationBase
 #	METHODS
 #-------------------------------------------------------------------------------
 
-func animate_enter(route: Node) -> void:
-	if route.has_node(player_path):
+func animate_enter(
+	route_node: Node,
+	route_cancel: Cancel) -> void:
+
+	if route_node.has_node(player_path):
 		if not enter_animation_name.is_empty():
-			var node: AnimationPlayer = route.get_node(player_path)
+			var node: AnimationPlayer = route_node.get_node(player_path)
 			var task := Task.from_conditional_signal(
 				node.animation_finished,
 				[enter_animation_name])
@@ -29,10 +32,13 @@ func animate_enter(route: Node) -> void:
 	else:
 		printerr("\tTarget animation player path for transition not found: '%s'" % player_path)
 
-func animate_exit(route: Node) -> void:
-	if route.has_node(player_path):
+func animate_exit(
+	route_node: Node,
+	route_cancel: Cancel) -> void:
+
+	if route_node.has_node(player_path):
 		if not exit_animation_name.is_empty():
-			var node: AnimationPlayer = route.get_node(player_path)
+			var node: AnimationPlayer = route_node.get_node(player_path)
 			var task := Task.from_conditional_signal(
 				node.animation_finished,
 				[exit_animation_name])
