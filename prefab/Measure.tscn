@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://d3r7fpp2ckkns"]
 
 [ext_resource type="FontFile" uid="uid://b4qkeyfiegw8b" path="res://assets/font/super-cartoon.ttf" id="1_cahes"]
-[ext_resource type="Script" path="res://prefab/Measure.gd" id="1_kq0wv"]
+[ext_resource type="Script" uid="uid://core7kl2g6r54" path="res://prefab/Measure.gd" id="1_kq0wv"]
 
 [sub_resource type="PrismMesh" id="PrismMesh_o3r03"]
 size = Vector3(0.25, 0.25, 0)

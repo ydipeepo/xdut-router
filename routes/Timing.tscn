@@ -1,13 +1,13 @@
 [gd_scene load_steps=22 format=3 uid="uid://bxxjn3ts7u4cl"]
 
-[ext_resource type="Script" path="res://addons/xdut-router/RouteControl.gd" id="1_5admw"]
-[ext_resource type="Script" path="res://routes/Timing.gd" id="1_xbluf"]
+[ext_resource type="Script" uid="uid://dtmbn2laxj14g" path="res://addons/xdut-router/RouteControl.gd" id="1_5admw"]
+[ext_resource type="Script" uid="uid://bjvdql83ydvpy" path="res://routes/Timing.gd" id="1_xbluf"]
 [ext_resource type="FontFile" uid="uid://b4qkeyfiegw8b" path="res://assets/font/super-cartoon.ttf" id="2_2cauj"]
-[ext_resource type="Script" path="res://addons/xdut-router/RouteAnimationBase.gd" id="2_pdko3"]
-[ext_resource type="Script" path="res://addons/xdut-router-motion/MotionRouteAnimation.gd" id="4_ood3g"]
-[ext_resource type="Script" path="res://addons/xdut-router-motion/SpringMotionRouteTransition.gd" id="4_yl42l"]
-[ext_resource type="Script" path="res://addons/xdut-router-motion/FloatMotionRouteValue.gd" id="5_vu0pb"]
-[ext_resource type="Script" path="res://addons/xdut-router-motion/Vector3MotionRouteValue.gd" id="6_72p0f"]
+[ext_resource type="Script" uid="uid://cgp1hrujxpawg" path="res://addons/xdut-router/RouteAnimationBase.gd" id="2_pdko3"]
+[ext_resource type="Script" uid="uid://3n2u35hlotet" path="res://addons/xdut-router-motion/MotionRouteAnimation.gd" id="4_ood3g"]
+[ext_resource type="Script" uid="uid://c8wpiu8e0urgv" path="res://addons/xdut-router-motion/SpringMotionRouteTransition.gd" id="4_yl42l"]
+[ext_resource type="Script" uid="uid://yu7fgujskbpe" path="res://addons/xdut-router-motion/FloatMotionRouteValue.gd" id="5_vu0pb"]
+[ext_resource type="Script" uid="uid://bt0h5uncy6idu" path="res://addons/xdut-router-motion/Vector3MotionRouteValue.gd" id="6_72p0f"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rk8n6"]
 bg_color = Color(1, 1, 1, 1)

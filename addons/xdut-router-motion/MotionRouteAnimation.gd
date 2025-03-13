@@ -23,16 +23,19 @@ class_name MotionRouteAnimation extends RouteAnimationBase
 #	METHODS
 #-------------------------------------------------------------------------------
 
-func animate_enter(route: Node) -> void:
+func animate_enter(
+	route_node: Node,
+	route_cancel: Cancel) -> void:
+
 	if value == null:
 		printerr("\t'value' is null.")
 		return
 
-	if not route.has_node(node_path):
+	if not route_node.has_node(node_path):
 		printerr("\tTarget node path for transition is not found: '", node_path, "'")
 		return
 
-	var node := route.get_node(node_path)
+	var node := route_node.get_node(node_path)
 	if enter_transition == null:
 		if not node_property_key in node:
 			printerr("\tTarget node property for transition not found: '", node_property_key, "' on '", node_path, "'")
@@ -45,18 +48,22 @@ func animate_enter(route: Node) -> void:
 			null if value.inherit_value_before_enter else value.get_value_before_enter(),
 			value.get_value(),
 			value.delay,
-			value.process)
+			value.process,
+			route_cancel)
 
-func animate_exit(route: Node) -> void:
+func animate_exit(
+	route_node: Node,
+	route_cancel: Cancel) -> void:
+
 	if value == null:
 		printerr("\t'value' is null.")
 		return
 
-	if not route.has_node(node_path):
+	if not route_node.has_node(node_path):
 		printerr("\tTarget node path for transition is not found: '", node_path, "'")
 		return
 
-	var node := route.get_node(node_path)
+	var node := route_node.get_node(node_path)
 	if exit_transition == null:
 		if not node_property_key in node:
 			printerr("\tTarget node property for transition not found: '", node_property_key, "' on '", node_path, "'")
@@ -69,4 +76,5 @@ func animate_exit(route: Node) -> void:
 			null if value.inherit_value_before_exit else value.get_value(),
 			value.get_value_after_exit(),
 			value.delay,
-			value.process)
+			value.process,
+			route_cancel)

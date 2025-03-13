@@ -31,37 +31,44 @@ func get_current_path() -> String:
 	return XDUT_RouteHelper.to_path(_get_current_navigation().path_segments)
 
 func register(
-	route: Node,
+	route_node: Node,
 	route_segment: String,
 	flags := 0) -> Awaitable:
 
 	var temporary := not _group_etag_stack.is_empty()
 
-	XDUT_RouteHelper.set_route(route, route_segment)
-	var route_segments := XDUT_RouteHelper.get_route_segments(route)
+	XDUT_RouteHelper.set_route(route_node, route_segment)
+	var route_segments := XDUT_RouteHelper.get_route_segments(route_node)
 	var navigation := _get_current_navigation()
 	var path := XDUT_RouteHelper.to_path(navigation.path_segments)
 
 	var group := _get_group() if temporary else _create_group()
-	_add_route(navigation.path_segments, route_segments, route, group)
+	_add_route_node(
+		navigation.path_segments,
+		route_segments,
+		route_node,
+		group)
 	return null if temporary else _create_completion(path, group, false)
 
 func unregister(
-	route: Node,
+	route_node: Node,
 	flags := 0) -> Awaitable:
 
-	if not XDUT_RouteHelper.is_route_node(route):
-		printerr("'", route, "' is not valid route.")
+	if not XDUT_RouteHelper.is_route_node(route_node):
+		printerr("'", route_node, "' is not valid route.")
 		return Task.canceled()
 
 	var temporary := not _group_etag_stack.is_empty()
 
-	var route_segments := XDUT_RouteHelper.get_route_segments(route)
+	var route_segments := XDUT_RouteHelper.get_route_segments(route_node)
 	var navigation := _get_current_navigation()
 	var path := XDUT_RouteHelper.to_path(navigation.path_segments)
 	
 	var group := _get_group() if temporary else _create_group()
-	_remove_route(route_segments, route, group)
+	_remove_route_node(
+		route_segments,
+		route_node,
+		group)
 	return null if temporary else _create_completion(path, group, false)
 
 func goto(
@@ -168,20 +175,20 @@ func _get_group() -> XDUT_RouteInvocationGroup:
 	assert(not _group_etag_stack.is_empty())
 	return _group_map[_group_etag_stack.back()]
 
-func _add_route(
+func _add_route_node(
 	path_segments: PackedStringArray,
 	route_segments: PackedStringArray,
-	route: Node,
+	route_node: Node,
 	group: XDUT_RouteInvocationGroup) -> void:
 
 	assert(not route_segments.is_empty())
-	assert(route != null)
+	assert(route_node != null)
 
 	for matcher: XDUT_RouteMatcher in get_children():
 		if matcher.add_route(
 			path_segments,
 			route_segments,
-			route,
+			route_node,
 			group):
 
 			return
@@ -193,21 +200,21 @@ func _add_route(
 	matcher.add_route(
 		path_segments,
 		route_segments,
-		route,
+		route_node,
 		group)
 
-func _remove_route(
+func _remove_route_node(
 	route_segments: PackedStringArray,
-	route: Node,
+	route_node: Node,
 	group: XDUT_RouteInvocationGroup) -> void:
 
 	assert(not route_segments.is_empty())
-	assert(route != null)
+	assert(route_node != null)
 
 	for matcher: XDUT_RouteMatcher in get_children():
 		if matcher.remove_route(
 			route_segments,
-			route,
+			route_node,
 			group):
 
 			break

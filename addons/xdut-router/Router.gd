@@ -55,7 +55,7 @@ static func get_route(route: Node) -> String:
 
 ## ルート (Route) ノードを登録します。
 static func register(
-	route: Node,
+	node: Node,
 	route_segment: String,
 	flags := 0) -> Awaitable:
 
@@ -64,11 +64,11 @@ static func register(
 		printerr("XDUT Router is not activated.")
 		return Task.canceled()
 
-	return canonical.register(route, route_segment, flags)
+	return canonical.register(node, route_segment, flags)
 
 ## ルート (Route) ノードの登録を解除します。
 static func unregister(
-	route: Node,
+	node: Node,
 	flags := 0) -> Awaitable:
 
 	var canonical := _get_canonical()
@@ -76,7 +76,7 @@ static func unregister(
 		printerr("XDUT Router is not activated.")
 		return Task.canceled()
 
-	return canonical.unregister(route, flags)
+	return canonical.unregister(node, flags)
 
 ## 指定したパスへ移動します。[br]
 ## [br]

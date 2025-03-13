@@ -10,7 +10,8 @@ func start(
 	from: Variant,
 	to: Variant,
 	delay: float,
-	process: int) -> void:
+	process: int,
+	route_cancel: Cancel) -> void:
 
 	#
 	# 継承先で実装します。

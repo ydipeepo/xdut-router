@@ -1,13 +1,13 @@
 [gd_scene load_steps=28 format=3 uid="uid://bdf4swo6wvs44"]
 
-[ext_resource type="Script" path="res://addons/xdut-router/PackageRouteControl.gd" id="1_021rg"]
-[ext_resource type="Script" path="res://routes/View.gd" id="1_rhcse"]
+[ext_resource type="Script" uid="uid://bcx0nle4exa08" path="res://addons/xdut-router/PackageRouteControl.gd" id="1_021rg"]
+[ext_resource type="Script" uid="uid://vuypa5vktyhk" path="res://routes/View.gd" id="1_rhcse"]
 [ext_resource type="FontFile" uid="uid://b4qkeyfiegw8b" path="res://assets/font/super-cartoon.ttf" id="2_cr5a0"]
-[ext_resource type="Script" uid="uid://chvgnddrgdcfu" path="res://addons/xdut-router/RouteAnimationBase.gd" id="3_in1pc"]
-[ext_resource type="Script" uid="uid://dhmrcfjn08nva" path="res://addons/xdut-router-motion/TweenMotionRouteTransition.gd" id="4_cb2u2"]
-[ext_resource type="Script" uid="uid://fu3v6ly7kmkq" path="res://addons/xdut-router-motion/MotionRouteAnimation.gd" id="5_nkwu0"]
-[ext_resource type="Script" uid="uid://dhh7qy1cmkncl" path="res://addons/xdut-router-motion/Vector2MotionRouteValue.gd" id="6_o525f"]
-[ext_resource type="Script" uid="uid://4c6tq5gvu5it" path="res://addons/xdut-router-motion/FloatMotionRouteValue.gd" id="7_au8fh"]
+[ext_resource type="Script" uid="uid://cgp1hrujxpawg" path="res://addons/xdut-router/RouteAnimationBase.gd" id="3_in1pc"]
+[ext_resource type="Script" uid="uid://bpjilketrampl" path="res://addons/xdut-router-motion/TweenMotionRouteTransition.gd" id="4_cb2u2"]
+[ext_resource type="Script" uid="uid://3n2u35hlotet" path="res://addons/xdut-router-motion/MotionRouteAnimation.gd" id="5_nkwu0"]
+[ext_resource type="Script" uid="uid://cgxjh5huxodh" path="res://addons/xdut-router-motion/Vector2MotionRouteValue.gd" id="6_o525f"]
+[ext_resource type="Script" uid="uid://yu7fgujskbpe" path="res://addons/xdut-router-motion/FloatMotionRouteValue.gd" id="7_au8fh"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cr0r2"]
 bg_color = Color(1, 1, 1, 1)
@@ -316,9 +316,9 @@ custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
 localize_numeral_system = false
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("2_cr5a0")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_qvl0g")
 theme_override_styles/hover = SubResource("StyleBoxFlat_plqen")
@@ -334,9 +334,9 @@ custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
 localize_numeral_system = false
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("2_cr5a0")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_qvl0g")
 theme_override_styles/hover = SubResource("StyleBoxFlat_plqen")
@@ -352,9 +352,9 @@ custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
 localize_numeral_system = false
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("2_cr5a0")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_qvl0g")
 theme_override_styles/hover = SubResource("StyleBoxFlat_plqen")
@@ -370,9 +370,9 @@ custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
 localize_numeral_system = false
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("2_cr5a0")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_qvl0g")
 theme_override_styles/hover = SubResource("StyleBoxFlat_plqen")

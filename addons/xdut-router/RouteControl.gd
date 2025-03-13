@@ -159,7 +159,38 @@ var _route_segment: String
 var _route: Variant
 var _route_params: Dictionary
 var _state: int = _STATE_EXITED
-var _state_cancel: Cancel
+
+static func _bundle_enter_path(
+	node: Node,
+	route_params: Dictionary,
+	route_cancel: Cancel,
+	calls: Array[Callable]) -> void:
+
+	assert(not XDUT_RouteHelper.is_route_node(node))
+
+	var enter_path := XDUT_RouteHelper.get_enter_path(node, route_params, route_cancel)
+	if enter_path.is_valid():
+		calls.push_back(enter_path)
+
+	for child_node: Node in node.get_children():
+		if not XDUT_RouteHelper.is_route_node(child_node):
+			_bundle_enter_path(child_node, route_params, route_cancel, calls)
+
+static func _bundle_exit_path(
+	node: Node,
+	route_cancel: Cancel,
+	calls: Array[Callable]) -> void:
+
+	assert(not XDUT_RouteHelper.is_route_node(node))
+
+	for child_index: int in range(node.get_child_count() - 1, -1, -1):
+		var child_node := node.get_child(child_index)
+		if not XDUT_RouteHelper.is_route_node(child_node):
+			_bundle_exit_path(child_node, route_cancel, calls)
+
+	var exit_path := XDUT_RouteHelper.get_exit_path(node, route_cancel)
+	if exit_path.is_valid():
+		calls.push_back(exit_path)
 
 func _enter_tree() -> void:
 	if _route_segment.is_empty():
@@ -186,16 +217,12 @@ func _exit_tree() -> void:
 		printerr("XDUT Router is not activated.")
 		return
 
-	if _state_cancel != null:
-		_state_cancel.request()
-		_state_cancel = null
-
 	_canonical.unregister(self)
 	_canonical = null
 
-func _enter_path_core(
-	cancel: Cancel,
-	route_params: Dictionary) -> void:
+func _enter_path(
+	route_params: Dictionary,
+	route_cancel: Cancel) -> void:
 
 	_route_params = route_params
 
@@ -212,12 +239,20 @@ func _enter_path_core(
 
 	_state = _STATE_ENTERING
 
-	await XDUT_RouteHelper.wait_animate_and_child_enter_calls(
-		self,
-		route_params,
-		_flags & FLAG_NOTIFY_CHILDREN != 0)
+	var calls: Array[Callable] = []
 
-	if cancel.is_requested:
+	for animation: RouteAnimationBase in _animations:
+		if animation != null:
+			calls.push_back(animation.animate_enter.bind(self, route_cancel))
+
+	if _flags & FLAG_NOTIFY_CHILDREN != null:
+		for child_node: Node in get_children():
+			if not XDUT_RouteHelper.is_route_node(child_node):
+				_bundle_enter_path(child_node, route_params, route_cancel, calls)
+
+	await Task.wait_all(calls)
+
+	if route_cancel.is_requested:
 		return
 
 	if _state == _STATE_ENTERING:
@@ -225,29 +260,27 @@ func _enter_path_core(
 
 	_state = _STATE_ENTERED
 
-func _enter_path(route_params: Dictionary) -> void:
-	if _state_cancel != null:
-		_state_cancel.request()
-		_state_cancel = null
-	_state_cancel = Cancel.create()
-
-	await Task \
-		.from_method(
-			_enter_path_core.bind(route_params),
-			_state_cancel) \
-		.wait()
-
-func _exit_path_core(cancel: Cancel) -> void:
+func _exit_path(route_cancel: Cancel) -> void:
 	if _state == _STATE_ENTERED:
 		exiting_path.emit()
 
 	_state = _STATE_EXITING
 
-	await XDUT_RouteHelper.wait_animate_and_child_exit_calls(
-		self,
-		flags & FLAG_NOTIFY_CHILDREN != 0)
+	var calls: Array[Callable] = []
 
-	if cancel.is_requested:
+	if _flags & FLAG_NOTIFY_CHILDREN != 0:
+		for child_index: int in range(get_child_count() - 1, -1, -1):
+			var child_node := get_child(child_index)
+			if not XDUT_RouteHelper.is_route_node(child_node):
+				_bundle_exit_path(child_node, route_cancel, calls)
+
+	for animation: RouteAnimationBase in _animations:
+		if animation != null:
+			calls.push_back(animation.animate_exit.bind(self, route_cancel))
+
+	await Task.wait_all(calls)
+
+	if route_cancel.is_requested:
 		return
 
 	if _state == _STATE_EXITING:
@@ -268,18 +301,6 @@ func _exit_path_core(cancel: Cancel) -> void:
 		_animations.assign(animations)
 
 	_state = _STATE_EXITED
-
-func _exit_path() -> void:
-	if _state_cancel != null:
-		_state_cancel.request()
-		_state_cancel = null
-	_state_cancel = Cancel.create()
-
-	await Task \
-		.from_method(
-			_exit_path_core,
-			_state_cancel) \
-		.wait()
 
 func _to_string() -> String:
 	return "<RouteControl#%s>" % _route_segment

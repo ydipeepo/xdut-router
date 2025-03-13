@@ -35,12 +35,13 @@ func start(
 	from: Variant,
 	to: Variant,
 	delay: float,
-	process: int) -> void:
+	process: int,
+	route_cancel: Cancel) -> void:
 
 	if 0.0 < delay:
 		node.set_indexed(node_property_key, from)
 	await Motion \
-		.spring(node, node_property_key) \
+		.spring(node, node_property_key, route_cancel) \
 		.set_stiffness(stiffness) \
 		.set_damping(damping) \
 		.set_mass(mass) \
