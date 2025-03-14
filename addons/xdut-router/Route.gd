@@ -164,8 +164,8 @@ static func _bundle_enter_path(
 
 	assert(not XDUT_RouteHelper.is_route_node(node))
 
-	var enter_path := XDUT_RouteHelper.get_enter_path(node, route_params, route_cancel)
-	if enter_path.is_valid():
+	if XDUT_RouteHelper.has_enter_path(node):
+		var enter_path := XDUT_RouteHelper.get_enter_path(node, route_params, route_cancel)
 		calls.push_back(enter_path)
 
 	for child_node: Node in node.get_children():
@@ -184,8 +184,8 @@ static func _bundle_exit_path(
 		if not XDUT_RouteHelper.is_route_node(child_node):
 			_bundle_exit_path(child_node, route_cancel, calls)
 
-	var exit_path := XDUT_RouteHelper.get_exit_path(node, route_cancel)
-	if exit_path.is_valid():
+	if XDUT_RouteHelper.has_exit_path(node):
+		var exit_path := XDUT_RouteHelper.get_exit_path(node, route_cancel)
 		calls.push_back(exit_path)
 
 func _enter_tree() -> void:
@@ -237,7 +237,7 @@ func _enter_path(
 		if animation != null:
 			calls.push_back(animation.animate_enter.bind(self, route_cancel))
 
-	if _flags & FLAG_NOTIFY_CHILDREN != null:
+	if _flags & FLAG_NOTIFY_CHILDREN != 0:
 		for child_node: Node in get_children():
 			if not XDUT_RouteHelper.is_route_node(child_node):
 				_bundle_enter_path(child_node, route_params, route_cancel, calls)

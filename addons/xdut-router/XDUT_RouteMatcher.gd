@@ -35,7 +35,7 @@ func add_route(
 			if depth == route_segments.size() - 1:
 				var route_wrapper := XDUT_RouteWrapper.new(route_node)
 				if _is_inside_path:
-					group.append_pre_enter_and_enter_path(route_wrapper, route_params)
+					route_wrapper.bundle_pre_enter_and_enter_path(group, route_params)
 				_route_wrapper_array.push_back(route_wrapper)
 
 			else:
@@ -85,7 +85,7 @@ func remove_route(
 					var route_wrapper := _route_wrapper_array[route_wrapper_index]
 					if route_wrapper.route_node == route_node:
 						if _is_inside_path:
-							group.append_exit_and_post_exit_path(route_wrapper)
+							route_wrapper.bundle_exit_and_post_exit_path(group)
 						_route_wrapper_array.remove_at(route_wrapper_index)
 						_route_added -= 1
 						break
@@ -117,7 +117,9 @@ func test_path_for_exit(group: XDUT_RouteInvocationGroup) -> void:
 			var matcher: XDUT_RouteMatcher = get_child(index)
 			matcher.test_path_for_exit(group)
 
-		group.append_exit_and_post_exit_path_array(_route_wrapper_array)
+		for route_wrapper_index: int in range(_route_wrapper_array.size() - 1, -1, -1):
+			var route_wrapper := _route_wrapper_array[route_wrapper_index]
+			route_wrapper.bundle_exit_and_post_exit_path(group)
 
 func test_path(
 	path_segments: PackedStringArray,
@@ -131,7 +133,8 @@ func test_path(
 		var segment_match := _compiled_route_segment.search(path_segments[depth])
 		if segment_match != null:
 			if _set_or_update_route_params(segment_match):
-				group.append_pre_enter_and_enter_path_array(_route_wrapper_array, route_params)
+				for route_wrapper: XDUT_RouteWrapper in _route_wrapper_array:
+					route_wrapper.bundle_pre_enter_and_enter_path(group, route_params)
 
 			_is_inside_path = true
 

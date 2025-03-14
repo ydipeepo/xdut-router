@@ -225,13 +225,15 @@ static func has_enter_path(route_node: Node) -> bool:
 	if route_node.has_method(_ENTER_PATH_METHOD_NAME):
 		match route_node.get_method_argument_count(_ENTER_PATH_METHOD_NAME):
 			0, \
-			1: return true
+			1, \
+			2: return true
 	return false
 
 static func has_exit_path(route_node: Node) -> bool:
 	if route_node.has_method(_EXIT_PATH_METHOD_NAME):
 		match route_node.get_method_argument_count(_EXIT_PATH_METHOD_NAME):
-			0: return true
+			0, \
+			1: return true
 	return false
 
 static func has_post_exit_path(route_node: Node) -> bool:

@@ -20,154 +20,185 @@ var route_node: Node:
 #	METHODS
 #-------------------------------------------------------------------------------
 
-func bundle_pre_enter_path(
-	route_params: Dictionary,
-	group_etag: int,
-	calls: Array[Callable]) -> void:
+func bundle_pre_enter_and_enter_path(
+	group: XDUT_RouteInvocationGroup,
+	route_params: Dictionary) -> void:
 
-	if _outer_required:
-		calls.push_back(_pre_enter_path.bind(route_params, group_etag))
+	var route_cancel := Cancel.create()
+	var group_etag := group.group_etag
 
-func bundle_enter_path(
-	route_params: Dictionary,
-	calls: Array[Callable]) -> void:
+	match _transition:
+		_TRANSITION_PRE_ENTER:
+			group.append_pre_enter_path(_pre_enter_path.bind(_transition_pre_enter_task, route_params, group_etag))
+			group.append_enter_path(_enter_path.bind(_transition_enter_task, route_cancel, route_params, group_etag))
+			_transition_pre_enter_task = Task.from_conditional_signal(_transition_completed, [_TRANSITION_PRE_ENTER, group_etag])
+			_transition_enter_task = Task.from_conditional_signal(_transition_completed, [_TRANSITION_ENTER, group_etag])
 
-	if _outer_required:
-		calls.push_back(_enter_path.bind(route_params))
-	else:
-		calls.push_back(_enter_path_without_outer.bind(route_params))
+		_TRANSITION_ENTER:
+			group.append_enter_path(_enter_path.bind(_transition_enter_task, route_cancel, route_params, group_etag))
+			_transition_enter_task = Task.from_conditional_signal(_transition_completed, [_TRANSITION_ENTER, group_etag])
 
-func bundle_exit_path(calls: Array[Callable]) -> void:
-	if _outer_required:
-		calls.push_back(_exit_path)
-	else:
-		calls.push_back(_exit_path_without_outer)
+		_TRANSITION_EXIT:
+			group.append_enter_path(_enter_path.bind(_transition_exit_task, route_cancel, route_params, group_etag))
+			_transition_enter_task = Task.from_conditional_signal(_transition_completed, [_TRANSITION_ENTER, group_etag])
 
-func bundle_post_exit_path(
-	group_etag: int,
-	calls: Array[Callable]) -> void:
+		_TRANSITION_POST_EXIT:
+			group.append_pre_enter_path(_pre_enter_path.bind(_transition_post_exit_task, route_params, group_etag))
+			group.append_enter_path(_enter_path.bind(Task.completed(), route_cancel, route_params, group_etag))
+			_transition_pre_enter_task = Task.from_conditional_signal(_transition_completed, [_TRANSITION_PRE_ENTER, group_etag])
+			_transition_enter_task = Task.from_conditional_signal(_transition_completed, [_TRANSITION_ENTER, group_etag])
 
-	if _outer_required:
-		calls.push_back(_post_exit_path.bind(group_etag))
+	if _transition_cancel != null:
+		_transition_cancel.request()
+	_transition_cancel = route_cancel
+
+func bundle_exit_and_post_exit_path(group: XDUT_RouteInvocationGroup) -> void:
+	var route_cancel := Cancel.create()
+	var group_etag := group.group_etag
+
+	match _transition:
+		_TRANSITION_PRE_ENTER:
+			group.append_post_exit_path(_post_exit_path.bind(_transition_pre_enter_task, group_etag))
+			_transition_post_exit_task = Task.from_conditional_signal(_transition_completed, [_TRANSITION_POST_EXIT, group_etag])
+
+		_TRANSITION_ENTER:
+			group.append_exit_path(_exit_path.bind(_transition_enter_task, route_cancel, group_etag))
+			group.append_post_exit_path(_post_exit_path.bind(Task.completed(), group_etag))
+			_transition_exit_task = Task.from_conditional_signal(_transition_completed, [_TRANSITION_EXIT, group_etag])
+			_transition_post_exit_task = Task.from_conditional_signal(_transition_completed, [_TRANSITION_POST_EXIT, group_etag])
+
+		_TRANSITION_EXIT:
+			group.append_exit_path(_exit_path.bind(_transition_exit_task, route_cancel, group_etag))
+			group.append_post_exit_path(_post_exit_path.bind(_transition_post_exit_task, group_etag))
+			_transition_exit_task = Task.from_conditional_signal(_transition_completed, [_TRANSITION_EXIT, group_etag])
+			_transition_post_exit_task = Task.from_conditional_signal(_transition_completed, [_TRANSITION_POST_EXIT, group_etag])
+
+		_TRANSITION_POST_EXIT:
+			group.append_post_exit_path(_post_exit_path.bind(_transition_post_exit_task, group_etag))
+			_transition_post_exit_task = Task.from_conditional_signal(_transition_completed, [_TRANSITION_POST_EXIT, group_etag])
+	
+	if _transition_cancel != null:
+		_transition_cancel.request()
+	_transition_cancel = route_cancel
 
 #-------------------------------------------------------------------------------
 
-signal _inner_exit_path_release
+signal _transition_completed(transition: int, group_etag: int)
+
+enum {
+	_TRANSITION_PRE_ENTER,
+	_TRANSITION_ENTER,
+	_TRANSITION_EXIT,
+	_TRANSITION_POST_EXIT,
+}
 
 var _route_node: Node
-var _inner_entrants: int
-var _inner_cancel: Cancel
-var _outer_entrants: int
-var _outer_pre_enter_task: Task
-var _outer_post_exit_task: Task
-var _outer_required: bool
+var _transition: int = _TRANSITION_POST_EXIT
+var _transition_cancel: Cancel
+var _transition_pre_enter_task := Task.completed()
+var _transition_enter_task := Task.completed()
+var _transition_exit_task := Task.completed()
+var _transition_post_exit_task := Task.completed()
 
 func _pre_enter_path(
+	transition_before_task: Task,
 	route_params: Dictionary,
 	group_etag: int) -> void:
 
-	var outer_entrants := _outer_entrants
-	_outer_entrants += 1
+	await transition_before_task.wait()
+	var transition_before := _transition
+	_transition = _TRANSITION_PRE_ENTER
 
-	if outer_entrants < 0:
-		return
+	match transition_before:
+		_TRANSITION_PRE_ENTER:
+			pass
+		_TRANSITION_POST_EXIT:
+			if XDUT_RouteHelper.has_pre_enter_path(_route_node):
+				var pre_enter_path := XDUT_RouteHelper.get_pre_enter_path(
+					_route_node,
+					route_params,
+					group_etag)
+				await pre_enter_path.call()
+		_:
+			assert(false)
 
-	if _outer_post_exit_task != null:
-		await _outer_post_exit_task.wait()
-	_outer_post_exit_task = null
+	_transition_completed.emit(_TRANSITION_PRE_ENTER, group_etag)
 
-	if outer_entrants == 0:
-		var pre_enter_path := XDUT_RouteHelper.get_pre_enter_path(
-			_route_node,
-			route_params,
-			group_etag)
-		if pre_enter_path.is_valid():
-			_outer_pre_enter_task = Task.from_method(pre_enter_path)
-	if _outer_pre_enter_task != null:
-		await _outer_pre_enter_task.wait()
-	_outer_pre_enter_task = null
+func _enter_path(
+	transition_before_task: Task,
+	route_cancel: Cancel,
+	route_params: Dictionary,
+	group_etag: int) -> void:
 
-func _enter_path_without_outer(route_params: Dictionary) -> void:
-	var inner_entrants := _inner_entrants
-	_inner_entrants += 1
+	await transition_before_task.wait()
+	var transition_before := _transition
+	if not route_cancel.is_requested:
+		_transition = _TRANSITION_ENTER
 
-	var route_cancel := Cancel.create()
-	if _inner_cancel != null:
-		_inner_cancel.request()
-		_inner_cancel = null
-	_inner_cancel = route_cancel
+		match transition_before:
+			_TRANSITION_PRE_ENTER, \
+			_TRANSITION_ENTER, \
+			_TRANSITION_EXIT, \
+			_TRANSITION_POST_EXIT:
+				if XDUT_RouteHelper.has_enter_path(_route_node):
+					var enter_path := XDUT_RouteHelper.get_enter_path(
+						_route_node,
+						route_params,
+						route_cancel)
+					await enter_path.call()
+			_:
+				assert(false)
 
-	var enter_path := XDUT_RouteHelper.get_enter_path(_route_node, route_params, route_cancel)
-	if enter_path.is_valid():
-		await enter_path.call()
+	_transition_completed.emit(_TRANSITION_ENTER, group_etag)
 
-	if inner_entrants < 0:
-		_inner_exit_path_release.emit()
+func _exit_path(
+	transition_before_task: Task,
+	route_cancel: Cancel,
+	group_etag: int) -> void:
 
-func _enter_path(route_params: Dictionary) -> void:
-	if _outer_entrants <= 0:
-		return
+	await transition_before_task.wait()
+	var transition_before := _transition
+	if not route_cancel.is_requested:
+		_transition = _TRANSITION_EXIT
 
-	if _outer_pre_enter_task != null:
-		await _outer_pre_enter_task.wait()
-	_outer_pre_enter_task = null
+		match transition_before:
+			_TRANSITION_ENTER, \
+			_TRANSITION_EXIT:
+				if XDUT_RouteHelper.has_exit_path(_route_node):
+					var exit_path := XDUT_RouteHelper.get_exit_path(
+						_route_node,
+						route_cancel)
+					await exit_path.call()
+			_:
+				assert(false)
 
-	await _enter_path_without_outer(route_params)
+	_transition_completed.emit(_TRANSITION_EXIT, group_etag)
 
-func _exit_path_without_outer() -> void:
-	_inner_entrants -= 1
-	var inner_entrants := _inner_entrants
+func _post_exit_path(
+	transition_before_task: Task,
+	group_etag: int) -> void:
 
-	var inner_exit_path_release_task: Task
-	if inner_entrants < 0:
-		inner_exit_path_release_task = Task.from_signal(_inner_exit_path_release)
+	await transition_before_task.wait()
+	var transition_before := _transition
+	_transition = _TRANSITION_POST_EXIT
 
-	var route_cancel := Cancel.create()
-	if _inner_cancel != null:
-		_inner_cancel.request()
-		_inner_cancel = null
-	_inner_cancel = route_cancel
+	match transition_before:
+		_TRANSITION_PRE_ENTER, \
+		_TRANSITION_ENTER:
+			if XDUT_RouteHelper.has_post_exit_path(_route_node):
+				var post_exit_path := XDUT_RouteHelper.get_post_exit_path(
+					_route_node,
+					group_etag)
+				await post_exit_path.call()
+		_TRANSITION_EXIT, \
+		_TRANSITION_POST_EXIT:
+			pass
+		_:
+			assert(false)
 
-	if inner_entrants < 0:
-		await inner_exit_path_release_task.wait()
-
-	var exit_path := XDUT_RouteHelper.get_exit_path(_route_node, route_cancel)
-	if exit_path.is_valid():
-		await exit_path.call()
-
-func _exit_path() -> void:
-	if _outer_entrants <= 0:
-		return
-
-	if _outer_pre_enter_task != null:
-		await _outer_pre_enter_task.wait()
-	_outer_pre_enter_task = null
-
-	await _exit_path_without_outer()
-
-func _post_exit_path(group_etag: int) -> void:
-	_outer_entrants -= 1
-	var outer_entrants := _outer_entrants
-
-	if outer_entrants < 0:
-		return
-
-	if _outer_pre_enter_task != null:
-		await _outer_pre_enter_task.wait()
-	_outer_pre_enter_task = null
-
-	if outer_entrants == 0:
-		var post_exit_path := XDUT_RouteHelper.get_post_exit_path(_route_node, group_etag)
-		if post_exit_path.is_valid():
-			_outer_post_exit_task = Task.from_method(post_exit_path)
-	if _outer_post_exit_task != null:
-		await _outer_post_exit_task.wait()
-	_outer_post_exit_task = null
+	_transition_completed.emit(_TRANSITION_POST_EXIT, group_etag)
 
 func _init(route_node: Node) -> void:
 	assert(route_node != null)
 
 	_route_node = route_node
-	_outer_required = \
-		XDUT_RouteHelper.has_pre_enter_path(_route_node) or \
-		XDUT_RouteHelper.has_post_exit_path(_route_node)
