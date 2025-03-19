@@ -85,9 +85,10 @@ func _pre_enter_path(
 
 		start = Time.get_ticks_usec()
 
-		_package_node = _package.instantiate()
+		var package_node := _package.instantiate()
 		if flags & FLAG_AUTO_VISIBLE_CHILDREN != 0:
-			_package_node.visible = false
+			package_node.visible = false
+		_package_node = package_node
 		save_group(group_etag)
 		add_child(_package_node)
 		restore_group()
@@ -98,6 +99,8 @@ func _pre_enter_path(
 			print("\tPackage tree [", group_etag, "]: ", _package_path, ", ", delta / 1000.0, "msec")
 
 func _post_exit_path(group_etag: int) -> void:
+#	super(group_etag)
+	
 	match _auto_free:
 		AUTO_FREE_NODE, \
 		AUTO_FREE_NODE_AND_PACKAGE:

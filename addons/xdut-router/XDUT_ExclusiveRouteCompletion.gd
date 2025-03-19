@@ -48,7 +48,7 @@ func _perform() -> void:
 	# :
 	#
 
-	var calls: Array[Callable] = []
+	var calls := []
 
 	#
 	# PRE_ENTER, EXIT

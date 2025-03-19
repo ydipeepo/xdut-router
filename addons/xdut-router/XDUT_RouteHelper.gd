@@ -291,6 +291,54 @@ static func get_post_exit_path(
 		printerr("Invalid '", _POST_EXIT_PATH_METHOD_NAME, "' method signature at: ", route_node)
 	return Callable()
 
+static func get_pre_enter_path_init(
+	route_node: Node,
+	route_params: Dictionary,
+	group_etag: int) -> Array:
+
+	if route_node.has_method(_PRE_ENTER_PATH_METHOD_NAME):
+		match route_node.get_method_argument_count(_PRE_ENTER_PATH_METHOD_NAME):
+			0: return [route_node, _PRE_ENTER_PATH_METHOD_NAME]
+			1: return [route_node, _PRE_ENTER_PATH_METHOD_NAME, [route_params]]
+			2: return [route_node, _PRE_ENTER_PATH_METHOD_NAME, [route_params, group_etag]]
+		printerr("Invalid '", _PRE_ENTER_PATH_METHOD_NAME, "' method signature at: ", route_node)
+	return []
+
+static func get_enter_path_init(
+	route_node: Node,
+	route_params: Dictionary,
+	route_cancel: Cancel) -> Array:
+
+	if route_node.has_method(_ENTER_PATH_METHOD_NAME):
+		match route_node.get_method_argument_count(_ENTER_PATH_METHOD_NAME):
+			0: return [route_node, _ENTER_PATH_METHOD_NAME]
+			1: return [route_node, _ENTER_PATH_METHOD_NAME, [route_params]]
+			2: return [route_node, _ENTER_PATH_METHOD_NAME, [route_params, route_cancel]]
+		printerr("Invalid '", _ENTER_PATH_METHOD_NAME, "' method signature at: ", route_node)
+	return []
+
+static func get_exit_path_init(
+	route_node: Node,
+	route_cancel: Cancel) -> Array:
+
+	if route_node.has_method(_EXIT_PATH_METHOD_NAME):
+		match route_node.get_method_argument_count(_EXIT_PATH_METHOD_NAME):
+			0: return [route_node, _EXIT_PATH_METHOD_NAME]
+			1: return [route_node, _EXIT_PATH_METHOD_NAME, [route_cancel]]
+		printerr("Invalid '", _EXIT_PATH_METHOD_NAME, "' method signature at: ", route_node)
+	return []
+
+static func get_post_exit_path_init(
+	route_node: Node,
+	group_etag: int) -> Array:
+
+	if route_node.has_method(_POST_EXIT_PATH_METHOD_NAME):
+		match route_node.get_method_argument_count(_POST_EXIT_PATH_METHOD_NAME):
+			0: return [route_node, _POST_EXIT_PATH_METHOD_NAME]
+			1: return [route_node, _POST_EXIT_PATH_METHOD_NAME, [group_etag]]
+		printerr("Invalid '", _POST_EXIT_PATH_METHOD_NAME, "' method signature at: ", route_node)
+	return []
+
 #-------------------------------------------------------------------------------
 
 const _PRE_ENTER_PATH_METHOD_NAME := &"_pre_enter_path"
