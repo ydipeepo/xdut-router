@@ -160,37 +160,42 @@ var _route: Variant
 var _route_params: Dictionary
 var _state: int = _STATE_EXITED
 
-static func _bundle_enter_path(
+static func _bundle_child_enter_path(
 	node: Node,
 	route_params: Dictionary,
 	route_cancel: Cancel,
-	calls: Array[Callable]) -> void:
+	calls: Array) -> void:
 
 	assert(not XDUT_RouteHelper.is_route_node(node))
 
 	if XDUT_RouteHelper.has_enter_path(node):
-		var enter_path := XDUT_RouteHelper.get_enter_path(node, route_params, route_cancel)
-		calls.push_back(enter_path)
+		var enter_path_init := XDUT_RouteHelper.get_enter_path_init(node, route_params, route_cancel)
+		calls.push_back(enter_path_init)
 
 	for child_node: Node in node.get_children():
 		if not XDUT_RouteHelper.is_route_node(child_node):
-			_bundle_enter_path(child_node, route_params, route_cancel, calls)
+			_bundle_child_enter_path(child_node, route_params, route_cancel, calls)
 
-static func _bundle_exit_path(
+static func _bundle_child_exit_path(
 	node: Node,
 	route_cancel: Cancel,
-	calls: Array[Callable]) -> void:
+	calls: Array) -> void:
 
 	assert(not XDUT_RouteHelper.is_route_node(node))
 
 	for child_index: int in range(node.get_child_count() - 1, -1, -1):
 		var child_node := node.get_child(child_index)
 		if not XDUT_RouteHelper.is_route_node(child_node):
-			_bundle_exit_path(child_node, route_cancel, calls)
+			_bundle_child_exit_path(child_node, route_cancel, calls)
 
 	if XDUT_RouteHelper.has_exit_path(node):
-		var exit_path := XDUT_RouteHelper.get_exit_path(node, route_cancel)
-		calls.push_back(exit_path)
+		var exit_path_init := XDUT_RouteHelper.get_exit_path_init(node, route_cancel)
+		calls.push_back(exit_path_init)
+
+func _enter_path_trailer() -> void:
+	if _state == _STATE_ENTERING:
+		entered_path.emit()
+	_state = _STATE_ENTERED
 
 func _enter_tree() -> void:
 	if _route_segment.is_empty():
@@ -229,78 +234,64 @@ func _enter_path(
 	if _state == _STATE_EXITED:
 		_animations.make_read_only()
 
-		if _flags & FLAG_AUTO_VISIBLE_SELF != 0:
-			visible = true
 		if _flags & FLAG_AUTO_VISIBLE_CHILDREN != 0:
 			for child_node: Node in get_children():
 				child_node.visible = true
+		if _flags & FLAG_AUTO_VISIBLE_SELF != 0:
+			visible = true
 
 		entering_path.emit()
 
 	_state = _STATE_ENTERING
 
-	var calls: Array[Callable] = []
-
+	var calls := []
 	for animation: RouteAnimationBase in _animations:
 		if animation != null:
-			calls.push_back(animation.animate_enter.bind(self, route_cancel))
-
+			calls.push_back([animation, &"animate_enter", [self, route_cancel]])
 	if _flags & FLAG_NOTIFY_CHILDREN != 0:
 		for child_node: Node in get_children():
 			if not XDUT_RouteHelper.is_route_node(child_node):
-				_bundle_enter_path(child_node, route_params, route_cancel, calls)
-
+				_bundle_child_enter_path(child_node, route_params, route_cancel, calls)
 	await Task.wait_all(calls)
 
-	if route_cancel.is_requested:
-		return
-
-	if _state == _STATE_ENTERING:
-		entered_path.emit()
-
-	_state = _STATE_ENTERED
+	if not route_cancel.is_requested:
+		_enter_path_trailer()
 
 func _exit_path(route_cancel: Cancel) -> void:
 	if _state == _STATE_ENTERED:
 		exiting_path.emit()
-
 	_state = _STATE_EXITING
 
-	var calls: Array[Callable] = []
-
+	var calls := []
 	if _flags & FLAG_NOTIFY_CHILDREN != 0:
 		for child_index: int in range(get_child_count() - 1, -1, -1):
 			var child_node := get_child(child_index)
 			if not XDUT_RouteHelper.is_route_node(child_node):
-				_bundle_exit_path(child_node, route_cancel, calls)
-
+				_bundle_child_exit_path(child_node, route_cancel, calls)
 	for animation: RouteAnimationBase in _animations:
 		if animation != null:
-			calls.push_back(animation.animate_exit.bind(self, route_cancel))
-
+			calls.push_back([animation, &"animate_exit", [self, route_cancel]])
 	await Task.wait_all(calls)
 
-	if route_cancel.is_requested:
-		return
+	if not route_cancel.is_requested:
+		if _state == _STATE_EXITING:
+			_route_params.clear()
+			_route = ""
 
-	if _state == _STATE_EXITING:
-		_route_params.clear()
-		_route = ""
+			exited_path.emit()
 
-		exited_path.emit()
+			if _flags & FLAG_AUTO_VISIBLE_SELF != 0:
+				visible = false
+			if _flags & FLAG_AUTO_VISIBLE_CHILDREN != 0:
+				for child_index: int in range(get_child_count() - 1, -1, -1):
+					var child_node: Node = get_child(child_index)
+					child_node.visible = false
 
-		if _flags & FLAG_AUTO_VISIBLE_CHILDREN != 0:
-			for child_index: int in range(get_child_count() - 1, -1, -1):
-				var child_node: Node = get_child(child_index)
-				child_node.visible = false
-		if _flags & FLAG_AUTO_VISIBLE_SELF != 0:
-			visible = false
+			var animations := _animations
+			_animations = []
+			_animations.assign(animations)
 
-		var animations := _animations
-		_animations = []
-		_animations.assign(animations)
-
-	_state = _STATE_EXITED
+		_state = _STATE_EXITED
 
 func _to_string() -> String:
 	return "<Route2D#%s>" % _route_segment

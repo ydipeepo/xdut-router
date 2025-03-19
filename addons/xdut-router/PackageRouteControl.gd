@@ -99,8 +99,6 @@ func _pre_enter_path(
 			print("\tPackage tree [", group_etag, "]: ", _package_path, ", ", delta / 1000.0, "msec")
 
 func _post_exit_path(group_etag: int) -> void:
-#	super(group_etag)
-	
 	match _auto_free:
 		AUTO_FREE_NODE, \
 		AUTO_FREE_NODE_AND_PACKAGE:

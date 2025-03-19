@@ -85,9 +85,10 @@ func _pre_enter_path(
 
 		start = Time.get_ticks_usec()
 
-		_package_node = _package.instantiate()
+		var package_node := _package.instantiate()
 		if flags & FLAG_AUTO_VISIBLE_CHILDREN != 0:
-			_package_node.visible = false
+			package_node.visible = false
+		_package_node = package_node
 		save_group(group_etag)
 		add_child(_package_node)
 		restore_group()
