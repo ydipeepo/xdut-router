@@ -1,16 +1,16 @@
 extends CenterContainer
 
 func _on_goto_pressed() -> void:
-	Router.goto("/route-2")
+	Router.goto("./", self)
 
 func _on_goto_a_pressed() -> void:
-	Router.goto("/route-2/a")
+	Router.goto("./a", self)
 
 func _on_goto_a_b_pressed() -> void:
-	Router.goto("/route-2/a/b")
+	Router.goto("./a/b", self)
 
 func _on_goto_a_b_c_pressed() -> void:
-	Router.goto("/route-2/a/b/c")
+	Router.goto("./a/b/c", self)
 
 func _on_route_a_resized() -> void:
 	%Route_A.pivot_offset = %Route_A.size / 2.0

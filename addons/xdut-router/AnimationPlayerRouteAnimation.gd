@@ -22,11 +22,12 @@ func animate_enter(
 	route_cancel: Cancel) -> void:
 
 	if route_node.has_node(player_path):
-		if not enter_animation_name.is_empty():
+		if not enter_animation_name.is_empty() and not route_cancel.is_requested:
 			var node: AnimationPlayer = route_node.get_node(player_path)
 			var task := Task.from_conditional_signal(
 				node.animation_finished,
-				[enter_animation_name])
+				[enter_animation_name],
+				route_cancel)
 			node.play(enter_animation_name)
 			await task.wait()
 	else:
@@ -37,7 +38,7 @@ func animate_exit(
 	route_cancel: Cancel) -> void:
 
 	if route_node.has_node(player_path):
-		if not exit_animation_name.is_empty():
+		if not exit_animation_name.is_empty() and not route_cancel.is_requested:
 			var node: AnimationPlayer = route_node.get_node(player_path)
 			var task := Task.from_conditional_signal(
 				node.animation_finished,

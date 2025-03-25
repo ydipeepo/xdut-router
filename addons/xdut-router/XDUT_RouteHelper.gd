@@ -1,57 +1,100 @@
 class_name XDUT_RouteHelper
 
 #-------------------------------------------------------------------------------
-#	CONSTANTS
-#-------------------------------------------------------------------------------
-
-const ROUTE_SEGMENT_META_KEY := &"__XDUT_ROUTE_SEGMENT"
-
-#-------------------------------------------------------------------------------
 #	METHODS
 #-------------------------------------------------------------------------------
 
-static func to_path(path_segments: PackedStringArray) -> String:
+static func has_route_wrapper(route_node: Node) -> bool:
+	assert(route_node != null)
+
+	return route_node.has_meta(_ROUTE_WRAPPER_META_KEY)
+
+static func get_route_wrapper(route_node: Node) -> XDUT_RouteWrapper:
+	assert(
+		route_node != null and
+		route_node.has_meta(_ROUTE_WRAPPER_META_KEY))
+
+	return route_node.get_meta(_ROUTE_WRAPPER_META_KEY)
+
+static func set_route_wrapper(
+	route_node: Node,
+	route_wrapper: XDUT_RouteWrapper) -> void:
+
+	assert(route_node != null)
+	assert(route_wrapper != null)
+
+	route_node.set_meta(_ROUTE_WRAPPER_META_KEY, route_wrapper)
+
+static func remove_route_wrapper(route_node: Node) -> void:
+	assert(
+		route_node != null and
+		route_node.has_meta(_ROUTE_WRAPPER_META_KEY))
+
+	route_node.remove_meta(_ROUTE_WRAPPER_META_KEY)
+
+static func join_route_segments(route_segments: PackedStringArray) -> String:
+	var route := "/"
+	if not route_segments.is_empty():
+		route += "/".join(route_segments)
+	return route
+
+static func join_path_segments(path_segments: PackedStringArray) -> String:
 	var path := "/"
 	if not path_segments.is_empty():
 		path += "/".join(path_segments)
 	return path
 
-static func is_route_node(node: Node) -> bool:
-	return \
-		node != null and \
-		node.has_meta(ROUTE_SEGMENT_META_KEY)
-
-static func get_route_node(node: Node) -> Node:
+static func find_affiliated_route_node(node: Node) -> Node:
 	while node != null:
-		if is_route_node(node):
-			return node
+		if has_route_wrapper(node):
+			break
 		node = node.get_parent()
-	return null
+	return node
 
-static func get_route_segments(node: Node) -> PackedStringArray:
+static func resolve_route_segments(route_node: Node) -> PackedStringArray:
+	var route_wrapper := get_route_wrapper(route_node)
+	var route_matcher_or_canonical: Node = route_wrapper.route_matcher
+
 	var route_segments: Array[String] = []
-	while node != null:
-		if is_route_node(node):
-			route_segments.push_back(node.get_meta(ROUTE_SEGMENT_META_KEY))
-		node = node.get_parent()
+	while route_matcher_or_canonical != null:
+		var route_matcher := route_matcher_or_canonical as XDUT_RouteMatcher
+		if route_matcher != null:
+			var route_segment := route_matcher.route_segment
+			if route_segment.is_empty():
+				route_segments.clear()
+				break
+			route_segments.push_back(route_segment)
+		route_matcher_or_canonical = route_matcher_or_canonical.get_parent()
 	route_segments.reverse()
 	return route_segments
 
-static func get_route(node: Node) -> String:
-	return "/" + "/".join(get_route_segments(node))
+static func resolve_path_segments(route_node: Node) -> Variant:
+	var route_wrapper := get_route_wrapper(route_node)
+	var route_matcher_or_canonical: Node = route_wrapper.route_matcher
 
-static func set_route(
-	node: Node,
-	route_segment: String) -> void:
-
-	node.set_meta(ROUTE_SEGMENT_META_KEY, route_segment)
+	var path_segments: Array[String] = []
+	while route_matcher_or_canonical != null:
+		var route_matcher := route_matcher_or_canonical as XDUT_RouteMatcher
+		if route_matcher != null:
+			if not route_matcher.is_inside_path:
+				return null
+			var path_segment := route_matcher.path_segment
+			#if path_segment.is_empty():
+			#	path_segments.clear()
+			#	break
+			path_segments.push_back(path_segment)
+		route_matcher_or_canonical = route_matcher_or_canonical.get_parent()
+	path_segments.reverse()
+	return path_segments
 
 static func parse_path(
 	path: String,
-	path_segments: PackedStringArray) -> Variant:
+	base_path_segments: PackedStringArray) -> Variant:
 
 	if path.is_empty():
 		return null
+
+	var path_segments: Array[String] = []
 
 	var p := path.find("/")
 	var q := 0
@@ -59,16 +102,14 @@ static func parse_path(
 
 	match path_segment:
 		"":
-			path_segments = PackedStringArray()
+			pass
 		".":
-			path_segments = path_segments.duplicate()
+			path_segments.assign(base_path_segments)
 		"..":
-			path_segments = path_segments.duplicate()
-			if path_segments.is_empty():
+			if base_path_segments.is_empty():
 				return null
-			path_segments.resize(path_segments.size() - 1)
-		_:
-			return null
+			path_segments.assign(base_path_segments)
+			path_segments.pop_back()
 
 	while p != -1:
 		q = p + 1
@@ -76,16 +117,19 @@ static func parse_path(
 		path_segment = path.substr(q, -1 if p == -1 else p - q)
 
 		match path_segment:
+			"":
+				if p != -1:
+					return null
 			"..":
 				if path_segments.is_empty():
 					return null
-				path_segments.resize(path_segments.size() - 1)
+				path_segments.pop_back()
 			_:
 				if not _is_valid_path_segment(path_segment):
 					return null
 				path_segments.push_back(path_segment)
 
-	return path_segments
+	return PackedStringArray(path_segments)
 
 static func parse_route_segment(route_segment: String) -> RegEx:
 	if route_segment.is_empty():
@@ -243,60 +287,101 @@ static func has_post_exit_path(route_node: Node) -> bool:
 			1: return true
 	return false
 
-static func get_pre_enter_path(
+static func call_pre_enter_path(
 	route_node: Node,
 	route_params: Dictionary,
-	group_etag: int) -> Callable:
+	route_event_batch_etag: int) -> void:
 
-	if route_node.has_method(_PRE_ENTER_PATH_METHOD_NAME):
-		match route_node.get_method_argument_count(_PRE_ENTER_PATH_METHOD_NAME):
-			0: return route_node._pre_enter_path
-			1: return route_node._pre_enter_path.bind(route_params)
-			2: return route_node._pre_enter_path.bind(route_params, group_etag)
-		printerr("Invalid '", _PRE_ENTER_PATH_METHOD_NAME, "' method signature at: ", route_node)
-	return Callable()
+	assert(route_node.has_method(_PRE_ENTER_PATH_METHOD_NAME))
+	match route_node.get_method_argument_count(_PRE_ENTER_PATH_METHOD_NAME):
+		0: await route_node._pre_enter_path()
+		1: await route_node._pre_enter_path(route_params)
+		2: await route_node._pre_enter_path(route_params, route_event_batch_etag)
+		_: assert(false) # BUG
 
-static func get_enter_path(
+static func call_enter_path(
 	route_node: Node,
 	route_params: Dictionary,
-	route_cancel: Cancel) -> Callable:
+	route_cancel: Cancel) -> void:
 
-	if route_node.has_method(_ENTER_PATH_METHOD_NAME):
-		match route_node.get_method_argument_count(_ENTER_PATH_METHOD_NAME):
-			0: return route_node._enter_path
-			1: return route_node._enter_path.bind(route_params)
-			2: return route_node._enter_path.bind(route_params, route_cancel)
-		printerr("Invalid '", _ENTER_PATH_METHOD_NAME, "' method signature at: ", route_node)
-	return Callable()
+	assert(route_node.has_method(_ENTER_PATH_METHOD_NAME))
+	match route_node.get_method_argument_count(_ENTER_PATH_METHOD_NAME):
+		0: await route_node._enter_path()
+		1: await route_node._enter_path(route_params)
+		2: await route_node._enter_path(route_params, route_cancel)
+		_: assert(false) # BUG
 
-static func get_exit_path(
+static func call_exit_path(
 	route_node: Node,
-	route_cancel: Cancel) -> Callable:
+	route_cancel: Cancel) -> void:
 
-	if route_node.has_method(_EXIT_PATH_METHOD_NAME):
-		match route_node.get_method_argument_count(_EXIT_PATH_METHOD_NAME):
-			0: return route_node._exit_path
-			1: return route_node._exit_path.bind(route_cancel)
-		printerr("Invalid '", _EXIT_PATH_METHOD_NAME, "' method signature at: ", route_node)
-	return Callable()
+	assert(route_node.has_method(_EXIT_PATH_METHOD_NAME))
+	match route_node.get_method_argument_count(_EXIT_PATH_METHOD_NAME):
+		0: await route_node._exit_path()
+		1: await route_node._exit_path(route_cancel)
+		_: assert(false) # BUG
 
-static func get_post_exit_path(
+static func call_post_exit_path(
 	route_node: Node,
-	group_etag: int) -> Callable:
+	route_event_batch_etag: int) -> void:
 
-	if route_node.has_method(_POST_EXIT_PATH_METHOD_NAME):
-		match route_node.get_method_argument_count(_POST_EXIT_PATH_METHOD_NAME):
-			0: return route_node._post_exit_path
-			1: return route_node._post_exit_path.bind(group_etag)
-		printerr("Invalid '", _POST_EXIT_PATH_METHOD_NAME, "' method signature at: ", route_node)
-	return Callable()
+	assert(route_node.has_method(_POST_EXIT_PATH_METHOD_NAME))
+	match route_node.get_method_argument_count(_POST_EXIT_PATH_METHOD_NAME):
+		0: await route_node._post_exit_path()
+		1: await route_node._post_exit_path(route_event_batch_etag)
+		_: assert(false) # BUG
+
+static func extract_pre_enter_path_init(
+	route_node: Node,
+	route_params: Dictionary,
+	route_event_batch_etag: int) -> Array:
+
+	assert(route_node.has_method(_PRE_ENTER_PATH_METHOD_NAME))
+	match route_node.get_method_argument_count(_PRE_ENTER_PATH_METHOD_NAME):
+		0: return [route_node, _PRE_ENTER_PATH_METHOD_NAME]
+		1: return [route_node, _PRE_ENTER_PATH_METHOD_NAME, [route_params]]
+		2: return [route_node, _PRE_ENTER_PATH_METHOD_NAME, [route_params, route_event_batch_etag]]
+	breakpoint # BUG
+	return []
+
+static func extract_enter_path_init(
+	route_node: Node,
+	route_params: Dictionary,
+	route_cancel: Cancel) -> Array:
+
+	assert(route_node.has_method(_ENTER_PATH_METHOD_NAME))
+	match route_node.get_method_argument_count(_ENTER_PATH_METHOD_NAME):
+		0: return [route_node, _ENTER_PATH_METHOD_NAME]
+		1: return [route_node, _ENTER_PATH_METHOD_NAME, [route_params]]
+		2: return [route_node, _ENTER_PATH_METHOD_NAME, [route_params, route_cancel]]
+	breakpoint # BUG
+	return []
+
+static func extract_exit_path_init(
+	route_node: Node,
+	route_cancel: Cancel) -> Array:
+
+	assert(route_node.has_method(_EXIT_PATH_METHOD_NAME))
+	match route_node.get_method_argument_count(_EXIT_PATH_METHOD_NAME):
+		0: return [route_node, _EXIT_PATH_METHOD_NAME]
+		1: return [route_node, _EXIT_PATH_METHOD_NAME, [route_cancel]]
+	breakpoint # BUG
+	return []
+
+static func extract_post_exit_path_init(
+	route_node: Node,
+	route_event_batch_etag: int) -> Array:
+
+	assert(route_node.has_method(_POST_EXIT_PATH_METHOD_NAME))
+	match route_node.get_method_argument_count(_POST_EXIT_PATH_METHOD_NAME):
+		0: return [route_node, _POST_EXIT_PATH_METHOD_NAME]
+		1: return [route_node, _POST_EXIT_PATH_METHOD_NAME, [route_event_batch_etag]]
+	breakpoint # BUG
+	return []
 
 #-------------------------------------------------------------------------------
 
-const _PRE_ENTER_PATH_METHOD_NAME := &"_pre_enter_path"
-const _ENTER_PATH_METHOD_NAME := &"_enter_path"
-const _EXIT_PATH_METHOD_NAME := &"_exit_path"
-const _POST_EXIT_PATH_METHOD_NAME := &"_post_exit_path"
+const _ROUTE_WRAPPER_META_KEY := &"__XDUT_ROUTE_WRAPPER"
 
 const _VALID_PATH_SEGMENT_CHARS: PackedStringArray = [
 	"-",
@@ -318,6 +403,13 @@ const _VALID_ROUTE_SEGMENT_LABEL_CHARS: PackedStringArray = [
 	"_",
 	"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
 ]
+
+const _PRE_ENTER_PATH_METHOD_NAME := &"_pre_enter_path"
+const _ENTER_PATH_METHOD_NAME := &"_enter_path"
+const _EXIT_PATH_METHOD_NAME := &"_exit_path"
+const _POST_EXIT_PATH_METHOD_NAME := &"_post_exit_path"
+const _REGISTER_VIEW_METHOD_NAME := &"_register_view"
+const _UNREGISTER_VIEW_METHOD_NAME := &"_unregister_view"
 
 static func _is_valid_path_segment(s: String) -> bool:
 	if s.is_empty():
