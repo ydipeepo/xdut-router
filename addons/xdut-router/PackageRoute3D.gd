@@ -57,7 +57,7 @@ var _package: PackedScene
 
 func _pre_enter_path(
 	route_params: Dictionary,
-	group_etag: int) -> void:
+	route_event_batch_etag: int) -> void:
 
 	var start: int
 	var delta: int
@@ -77,8 +77,8 @@ func _pre_enter_path(
 
 		delta = Time.get_ticks_usec() - start
 		
-		if get_navigation_verbose():
-			print("\tPackage load [", group_etag, "]: ", _package_path, ", ", delta / 1000.0, "msec")
+		if is_navigation_verbose():
+			print("\tPackage load [", route_event_batch_etag, "]: ", _package_path, ", ", delta / 1000.0, "msec")
 
 	if _package_node == null:
 		assert(_package != null)
@@ -89,23 +89,23 @@ func _pre_enter_path(
 		if flags & FLAG_AUTO_VISIBLE_CHILDREN != 0:
 			package_node.visible = false
 		_package_node = package_node
-		save_group(group_etag)
+		save_event_batch(route_event_batch_etag)
 		add_child(_package_node)
-		restore_group()
+		restore_event_batch()
 
 		delta = Time.get_ticks_usec() - start
 		
-		if get_navigation_verbose():
-			print("\tPackage tree [", group_etag, "]: ", _package_path, ", ", delta / 1000.0, "msec")
+		if is_navigation_verbose():
+			print("\tPackage tree [", route_event_batch_etag, "]: ", _package_path, ", ", delta / 1000.0, "msec")
 
-func _post_exit_path(group_etag: int) -> void:
+func _post_exit_path(route_event_batch_etag: int) -> void:
 	match _auto_free:
 		AUTO_FREE_NODE, \
 		AUTO_FREE_NODE_AND_PACKAGE:
 			if _package_node != null:
-				save_group(group_etag)
+				save_event_batch(route_event_batch_etag)
 				remove_child(_package_node)
-				restore_group()
+				restore_event_batch()
 				_package_node.queue_free()
 			_package_node = null
 

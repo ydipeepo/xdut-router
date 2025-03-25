@@ -36,7 +36,7 @@ static var current_path: String:
 		var canonical := _get_canonical()
 		if canonical == null:
 			printerr("XDUT Router is not activated.")
-			return "?"
+			return ""
 
 		return canonical.get_current_path()
 
@@ -45,13 +45,42 @@ static var current_path: String:
 #-------------------------------------------------------------------------------
 
 ## 指定したノードが属するルートを取得します。
-static func get_route(route: Node) -> String:
+static func get_route(node: Node) -> String:
 	var canonical := _get_canonical()
 	if canonical == null:
 		printerr("XDUT Router is not activated.")
-		return "?"
+		return ""
 
-	return "/" + "/".join(XDUT_RouteHelper.get_route_segments(route))
+	var route_node := XDUT_RouteHelper.find_affiliated_route_node(node)
+	if route_node == null:
+		printerr("'", node, "' does not affiliate to the route node.")
+		return ""
+
+	var route_segments := XDUT_RouteHelper.resolve_route_segments(route_node)
+	assert(not route_segments.is_empty())
+	return XDUT_RouteHelper.join_route_segments(route_segments)
+
+## 指定したノードが属するパスを取得します。
+static func get_path(node: Node) -> String:
+	var canonical := _get_canonical()
+	if canonical == null:
+		printerr("XDUT Router is not activated.")
+		return ""
+
+	var route_node := XDUT_RouteHelper.find_affiliated_route_node(node)
+	if route_node == null:
+		printerr("'", node, "' does not affiliate to the route node.")
+		return ""
+
+	var resolved_path_segments := XDUT_RouteHelper.resolve_path_segments(route_node)
+	if resolved_path_segments == null:
+		var route_segments := XDUT_RouteHelper.resolve_route_segments(route_node)
+		var route := XDUT_RouteHelper.join_route_segments(route_segments)
+		printerr("The route '", route, "' to which '", node, "' affiliates is currently inactive.")
+		return ""
+
+	var path_segments := resolved_path_segments as PackedStringArray
+	return XDUT_RouteHelper.join_path_segments(path_segments)
 
 ## ルート (Route) ノードを登録します。
 static func register(
@@ -62,6 +91,14 @@ static func register(
 	var canonical := _get_canonical()
 	if canonical == null:
 		printerr("XDUT Router is not activated.")
+		return Task.canceled()
+
+	if not node.is_inside_tree():
+		printerr("'", node, "' has not been entered the scene tree.")
+		return Task.canceled()
+
+	if XDUT_RouteHelper.has_route_wrapper(node):
+		printerr("'", node, "' is already registered as a route node.")
 		return Task.canceled()
 
 	return canonical.register(node, route_segment, flags)
@@ -76,6 +113,10 @@ static func unregister(
 		printerr("XDUT Router is not activated.")
 		return Task.canceled()
 
+	if not XDUT_RouteHelper.has_route_wrapper(node):
+		printerr("'", node, "' is not already registered as a route node.")
+		return Task.canceled()
+
 	return canonical.unregister(node, flags)
 
 ## 指定したパスへ移動します。[br]
@@ -83,6 +124,7 @@ static func unregister(
 ## 直前のパスはメモリに保持され [method back] により復帰することができます。
 static func goto(
 	path: String,
+	base_node: Node = null,
 	flags := 0) -> Awaitable:
 
 	var canonical := _get_canonical()
@@ -90,13 +132,14 @@ static func goto(
 		printerr("XDUT Router is not activated.")
 		return Task.canceled()
 
-	return canonical.goto(path, flags)
+	return canonical.goto(path, base_node, flags)
 
 ## 指定したパスへ置換します。[br]
 ## [br]
 ## 直前のパスはメモリから破棄されます。
 static func replace(
 	path: String,
+	base_node: Node = null,
 	flags := 0) -> Awaitable:
 
 	var canonical := _get_canonical()
@@ -104,7 +147,7 @@ static func replace(
 		printerr("XDUT Router is not activated.")
 		return Task.canceled()
 
-	return canonical.replace(path, flags)
+	return canonical.replace(path, base_node, flags)
 
 ## 現在のパスを再読み込みします。
 static func reload(flags := 0) -> Awaitable:

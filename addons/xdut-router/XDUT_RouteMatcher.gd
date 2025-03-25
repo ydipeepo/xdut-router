@@ -16,15 +16,19 @@ var route_segment: String:
 	get:
 		return _route_segment
 
+var path_segment: String:
+	get:
+		return _path_segment
+
 #-------------------------------------------------------------------------------
 #	METHODS
 #-------------------------------------------------------------------------------
 
 func add_route(
-	path_segments: PackedStringArray,
 	route_segments: PackedStringArray,
 	route_node: Node,
-	route_invocation_group: XDUT_RouteInvocationGroup,
+	route_event_batch: XDUT_RouteEventBatch,
+	path_segments: PackedStringArray,
 	depth := 0) -> bool:
 
 	assert(0 <= depth)
@@ -33,19 +37,20 @@ func add_route(
 		var route_segment := route_segments[depth]
 		if _route_segment == route_segment:
 			if depth == route_segments.size() - 1:
-				var route_transition_queue := XDUT_RouteTransitionQueue.new(route_node)
+				var route_wrapper := XDUT_RouteWrapper.new(self, route_node)
+				route_wrapper.mark_node()
 				if _is_inside_path:
-					route_transition_queue.enqueue_enter_transition(route_invocation_group, route_params, false)
-				_route_transition_queue_array.push_back(route_transition_queue)
+					route_wrapper.enter(route_event_batch, route_params, false)
+				_route_wrappers.push_back(route_wrapper)
 
 			else:
 				var matched := false
 				for matcher: XDUT_RouteMatcher in get_children():
 					if matcher.add_route(
-						path_segments,
 						route_segments,
 						route_node,
-						route_invocation_group,
+						route_event_batch,
+						path_segments,
 						depth + 1):
 
 						matched = true
@@ -53,15 +58,15 @@ func add_route(
 
 				if not matched:
 					var matcher := new(
-						path_segments,
 						route_segments,
+						path_segments,
 						depth + 1)
 					add_child(matcher)
 					matcher.add_route(
-						path_segments,
 						route_segments,
 						route_node,
-						route_invocation_group,
+						route_event_batch,
+						path_segments,
 						depth + 1)
 
 			_route_added += 1
@@ -72,7 +77,7 @@ func add_route(
 func remove_route(
 	route_segments: PackedStringArray,
 	route_node: Node,
-	route_invocation_group: XDUT_RouteInvocationGroup,
+	route_event_batch: XDUT_RouteEventBatch,
 	depth := 0) -> bool:
 
 	assert(0 <= depth)
@@ -81,13 +86,14 @@ func remove_route(
 		var route_segment := route_segments[depth]
 		if _route_segment == route_segment:
 			if depth == route_segments.size() - 1:
-				for route_transition_queue_index: int in range(_route_transition_queue_array.size() - 1, -1, -1):
-					var route_transition_queue := _route_transition_queue_array[route_transition_queue_index]
-					if route_transition_queue.route_node == route_node:
+				for route_wrapper_index: int in range(_route_wrappers.size() - 1, -1, -1):
+					var route_wrapper := _route_wrappers[route_wrapper_index]
+					if route_wrapper.route_node == route_node:
 						if _is_inside_path:
-							route_transition_queue.enqueue_exit_transition(route_invocation_group)
-						_route_transition_queue_array.remove_at(route_transition_queue_index)
+							route_wrapper.exit(route_event_batch)
+						_route_wrappers.remove_at(route_wrapper_index)
 						_route_added -= 1
+						route_wrapper.unmark_node()
 						break
 
 			else:
@@ -95,7 +101,7 @@ func remove_route(
 					if matcher.remove_route(
 						route_segments,
 						route_node,
-						route_invocation_group,
+						route_event_batch,
 						depth + 1):
 
 						_route_added -= 1
@@ -108,22 +114,23 @@ func remove_route(
 
 	return false
 
-func test_path_for_exit(route_invocation_group: XDUT_RouteInvocationGroup) -> void:
+func test_path_for_exit(route_event_batch: XDUT_RouteEventBatch) -> void:
 	if _is_inside_path:
 		_is_inside_path = false
-		route_params.clear()
+		_route_params.clear()
+		_path_segment = ""
 
 		for index: int in range(get_child_count() - 1, -1, -1):
 			var matcher: XDUT_RouteMatcher = get_child(index)
-			matcher.test_path_for_exit(route_invocation_group)
+			matcher.test_path_for_exit(route_event_batch)
 
-		for route_transition_queue_index: int in range(_route_transition_queue_array.size() - 1, -1, -1):
-			var _route_transition_queue := _route_transition_queue_array[route_transition_queue_index]
-			_route_transition_queue.enqueue_exit_transition(route_invocation_group)
+		for route_wrapper_index: int in range(_route_wrappers.size() - 1, -1, -1):
+			var route_wrapper := _route_wrappers[route_wrapper_index]
+			route_wrapper.exit(route_event_batch)
 
 func test_path(
+	route_event_batch: XDUT_RouteEventBatch,
 	path_segments: PackedStringArray,
-	route_invocation_group: XDUT_RouteInvocationGroup,
 	depth := 0) -> void:
 
 	assert(not path_segments.is_empty())
@@ -132,21 +139,25 @@ func test_path(
 	if depth < path_segments.size():
 		var segment_match := _compiled_route_segment.search(path_segments[depth])
 		if segment_match != null:
-			var force := _is_inside_path
-			if _set_or_update_route_params(segment_match):
-				for route_transition_queue: XDUT_RouteTransitionQueue in _route_transition_queue_array:
-					route_transition_queue.enqueue_enter_transition(route_invocation_group, route_params, force)
-
+			var is_reentry := _is_inside_path
 			_is_inside_path = true
+			_path_segment = path_segments[depth]
+
+			if _set_or_update_route_params(segment_match, is_reentry):
+				for route_wrapper: XDUT_RouteWrapper in _route_wrappers:
+					route_wrapper.enter(
+						route_event_batch,
+						_route_params,
+						is_reentry)
 
 			for matcher: XDUT_RouteMatcher in get_children():
 				matcher.test_path(
+					route_event_batch,
 					path_segments,
-					route_invocation_group,
 					depth + 1)
 			return
 
-	test_path_for_exit(route_invocation_group)
+	test_path_for_exit(route_event_batch)
 
 #-------------------------------------------------------------------------------
 
@@ -156,8 +167,9 @@ var _is_inside_path: bool
 var _compiled_route_segment: RegEx
 var _route_segment: String
 var _route_params: Dictionary
-var _route_transition_queue_array: Array[XDUT_RouteTransitionQueue]
+var _route_wrappers: Array[XDUT_RouteWrapper]
 var _route_added: int
+var _path_segment: String
 
 static func _get_canonical() -> Node:
 	if not is_instance_valid(_canonical):
@@ -167,14 +179,10 @@ static func _get_canonical() -> Node:
 			.get_node("/root/XDUT_RouterCanonical")
 	return _canonical
 
-func _get_parent_route_params() -> Dictionary:
-	var parent := get_parent()
-	return \
-		parent.route_params.duplicate() \
-		if parent is XDUT_RouteMatcher else \
-		{}
+func _set_or_update_route_params(
+	segment_match: RegExMatch,
+	is_reentry: bool) -> bool:
 
-func _set_or_update_route_params(segment_match: RegExMatch) -> bool:
 	assert(segment_match != null)
 
 	#
@@ -183,12 +191,16 @@ func _set_or_update_route_params(segment_match: RegExMatch) -> bool:
 	# 設定もしくは更新された場合は true を返します。
 	#
 
-	var new_route_params := _get_parent_route_params()
+	var parent := get_parent()
+	var new_route_params: Dictionary = \
+		parent.route_params.duplicate() \
+		if parent is XDUT_RouteMatcher else \
+		{}
 	for key: String in segment_match.names:
 		new_route_params[key] = segment_match.get_string(key)
 
 	var route_params_changed := true
-	if _is_inside_path:
+	if is_reentry:
 		var new_route_params_keys := new_route_params.keys()
 		if _route_params.has_all(new_route_params_keys) and new_route_params.has_all(_route_params.keys()):
 			route_params_changed = false
@@ -204,8 +216,8 @@ func _set_or_update_route_params(segment_match: RegExMatch) -> bool:
 	return false
 
 func _init(
-	path_segments: PackedStringArray,
 	route_segments: PackedStringArray,
+	path_segments: PackedStringArray,
 	depth := 0) -> void:
 
 	var route_segment := route_segments[depth]
@@ -218,7 +230,8 @@ func _init(
 	if depth < path_segments.size():
 		var segment_match := compiled_route_segment.search(path_segments[depth])
 		if segment_match != null:
-			_set_or_update_route_params(segment_match)
+			_set_or_update_route_params(segment_match, false)
 			_is_inside_path = true
+			_path_segment = path_segments[depth]
 
 	name = route_segment

@@ -1,4 +1,4 @@
-class_name XDUT_RouteEmptyTransition extends XDUT_RouteTransition
+class_name XDUT_RouteEmptyTransaction extends XDUT_RouteTransaction
 
 #-------------------------------------------------------------------------------
 #	METHODS

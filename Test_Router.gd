@@ -11,22 +11,22 @@ func _on_back_pressed() -> void:
 	Router.back()
 
 func _on_goto_route_1_pressed() -> void:
-	Router.goto("/route-1", Router.FLAG_EXCLUSIVE)
+	Router.goto("/route-1", null, Router.FLAG_EXCLUSIVE)
 
 func _on_goto_route_2_pressed() -> void:
-	Router.goto("/route-2", Router.FLAG_EXCLUSIVE)
+	Router.goto("/route-2", null, Router.FLAG_EXCLUSIVE)
 
 func _on_goto_package_route_pressed() -> void:
-	Router.goto("/package-route", Router.FLAG_EXCLUSIVE)
+	Router.goto("/package-route", null, Router.FLAG_EXCLUSIVE)
 
 func _on_goto_pattern_match_pressed() -> void:
-	Router.goto("/pattern-match", Router.FLAG_EXCLUSIVE)
+	Router.goto("/pattern-match", null, Router.FLAG_EXCLUSIVE)
 
 func _on_goto_timing_pressed() -> void:
-	Router.goto("/timing", Router.FLAG_EXCLUSIVE)
+	Router.goto("/timing", null, Router.FLAG_EXCLUSIVE)
 
 func _on_goto_child_notification_pressed() -> void:
-	Router.goto("/child-notification", Router.FLAG_EXCLUSIVE)
+	Router.goto("/child-notification", null, Router.FLAG_EXCLUSIVE)
 
 func _on_goto_view_pressed() -> void:
-	Router.goto("/view", Router.FLAG_EXCLUSIVE)
+	Router.goto("/view", null, Router.FLAG_EXCLUSIVE)

@@ -1,4 +1,21 @@
-class_name XDUT_SimultaneousRouteCompletion extends TaskBase
+class_name XDUT_RouteSimultaneousDispatcher extends TaskBase
+
+#
+# NOTE:
+# _exit_path, _enter_path を平行して処理します。
+#
+# +-<-----+ _pre_enter_path
+# |
+# +-<-+---+ _exit_path
+# |   |
+# |   +---+ _enter_path
+# |
+# +-<-----+ _post_exit_path
+# |
+# X < release
+# |
+# :
+#
 
 #-------------------------------------------------------------------------------
 #	METHODS
@@ -6,7 +23,7 @@ class_name XDUT_SimultaneousRouteCompletion extends TaskBase
 
 func cleanup() -> void:
 	if is_instance_valid(_router_canonical):
-		_router_canonical.cleanup_group(_group.group_etag)
+		_router_canonical.cleanup_event_batch(_route_event_batch.etag)
 	_router_canonical = null
 
 	super()
@@ -17,68 +34,36 @@ func cleanup() -> void:
 
 var _router_canonical: Node
 var _path: String
-var _group: XDUT_RouteInvocationGroup
+var _route_event_batch: XDUT_RouteEventBatch
 
 func _init(
 	router_canonical: Node,
-	path: String,
-	group: XDUT_RouteInvocationGroup) -> void:
+	route_event_batch: XDUT_RouteEventBatch,
+	path: String) -> void:
 
 	reference()
 
 	_router_canonical = router_canonical
+	_route_event_batch = route_event_batch
 	_path = path
-	_group = group
 	_perform()
 
 func _perform() -> void:
-	#
-	# EXIT, ENTER 同時
-	#
-	# +-<-----+ PRE_ENTER
-	# |
-	# +-<-+---+ EXIT
-	# |   |
-	# |   +---+ ENTER
-	# |
-	# +-<-----+ POST_EXIT
-	# |
-	# X < RELEASE
-	# |
-	# :
-	#
-
 	var calls := []
 
-	#
-	# PRE_ENTER
-	#
-
-	_group.bundle_pre_enter_path(calls)
+	_route_event_batch.bundle_pre_enter_path(calls)
 	while not calls.is_empty():
 		await Task.wait_all(calls); calls.clear()
-		_group.bundle_pre_enter_path(calls)
+		_route_event_batch.bundle_pre_enter_path(calls)
 
-	#
-	# EXIT, ENTER
-	#
-
-	_group.bundle_exit_path(calls)
-	_group.bundle_enter_path(calls)
+	_route_event_batch.bundle_exit_path(calls)
+	_route_event_batch.bundle_enter_path(calls)
 	if not calls.is_empty():
 		await Task.wait_all(calls); calls.clear()
 
-	#
-	# POST_EXIT
-	#
-
-	_group.bundle_post_exit_path(calls)
+	_route_event_batch.bundle_post_exit_path(calls)
 	while not calls.is_empty():
 		await Task.wait_all(calls); calls.clear()
-		_group.bundle_post_exit_path(calls)
-
-	#
-	# 通知
-	#
+		_route_event_batch.bundle_post_exit_path(calls)
 
 	release_complete(_path)

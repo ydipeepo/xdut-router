@@ -1,4 +1,4 @@
-class_name XDUT_RouteEnterTransition extends XDUT_RouteTransition
+class_name XDUT_RouteEnterEventTransaction extends XDUT_RouteTransaction
 
 #-------------------------------------------------------------------------------
 #	METHODS
@@ -8,82 +8,80 @@ func get_state() -> int:
 	var state_array := await _state_task.wait()
 	return state_array[0]
 
-func cancel() -> void:
-	_cancel.request()
+func abort() -> void:
+	_abort.request()
 
 #-------------------------------------------------------------------------------
 
 signal _set_state(state: int)
 
-var _last_route_transition: XDUT_RouteTransition
+var _route_transaction: XDUT_RouteTransaction
+var _route_event_batch: XDUT_RouteEventBatch
 var _route_node: Node
 var _route_params: Dictionary
-var _route_invocation_group_etag: int
-var _force: bool
-var _cancel := Cancel.create()
+var _is_reentry: bool
+var _abort := Cancel.create()
 var _state_task: Task
 
 func _init(
-	last_route_transition: XDUT_RouteTransition,
+	route_transaction: XDUT_RouteTransaction,
+	route_event_batch: XDUT_RouteEventBatch,
 	route_node: Node,
 	route_params: Dictionary,
-	route_invocation_group: XDUT_RouteInvocationGroup,
-	force: bool) -> void:
+	is_reentry: bool) -> void:
 
-	route_invocation_group.append_pre_enter_path([self, _call_pre_enter_path.get_method()])
-	route_invocation_group.append_enter_path([self, _call_enter_path.get_method()])
-
+	_route_transaction = route_transaction
+	_route_event_batch = route_event_batch
 	_route_node = route_node
 	_route_params = route_params
-	_route_invocation_group_etag = route_invocation_group.group_etag
-	_force = force
-	_last_route_transition = last_route_transition
+	_is_reentry = is_reentry
 	_state_task = Task.from_signal(_set_state, 1)
 
+	route_event_batch.append_pre_enter_path([self, _call_pre_enter_path.get_method()])
+	route_event_batch.append_enter_path([self, _call_enter_path.get_method()])
+
 func _call_pre_enter_path() -> void:
-	var last_state := await _last_route_transition.get_state()
+	var state := await _route_transaction.get_state()
 	
-	if _cancel.is_requested:
+	if _abort.is_requested:
 		_set_state.emit(STATE_PRE_ENTERING)
 		return
 
-	match last_state:
+	match state:
 		#STATE_EXITING, \
 		#STATE_EXITED, \
 		#STATE_POST_EXITING, \
 		STATE_POST_EXITED:
 			if is_instance_valid(_route_node) and XDUT_RouteHelper.has_pre_enter_path(_route_node):
-				var pre_enter_path := XDUT_RouteHelper.get_pre_enter_path(
+				await XDUT_RouteHelper.call_pre_enter_path(
 					_route_node,
 					_route_params,
-					_route_invocation_group_etag)
-				await pre_enter_path.call()
+					_route_event_batch.etag)
 
-	if _cancel.is_requested:
+	if _abort.is_requested:
 		_set_state.emit(STATE_PRE_ENTERED)
 		return
 
 func _call_enter_path() -> void:
-	var last_state := await _last_route_transition.get_state()
+	var state := await _route_transaction.get_state()
 
-	if _cancel.is_requested:
+	if _abort.is_requested:
 		_set_state.emit(STATE_ENTERING)
 		return
 
-	match [last_state, _force]:
-		# パターンマッチによる再進入
+	match [state, _is_reentry]:
+		# セグメントパターンマッチによる再進入
 		[STATE_ENTERING, true], \
 		[STATE_ENTERED, true], \
 		# 他
-		#[STATE_EXITING, _], \
+		[STATE_EXITING, _], \
 		[STATE_EXITED, _], \
 		[STATE_POST_EXITING, _], \
 		[STATE_POST_EXITED, _]:
 			if is_instance_valid(_route_node) and XDUT_RouteHelper.has_enter_path(_route_node):
-				var enter_path := XDUT_RouteHelper.get_enter_path(
+				await XDUT_RouteHelper.call_enter_path(
 					_route_node,
 					_route_params,
-					_cancel)
-				await enter_path.call()
+					_abort)
 
 	_set_state.emit(STATE_ENTERED)
