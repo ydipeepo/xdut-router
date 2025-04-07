@@ -18,8 +18,6 @@
     - [XDUT Motion](https://github.com/ydipeepo/xdut-motion)
 3. プロジェクトを開いて実行します。
 
-<br />
-
 #### プロジェクトにアドオンを追加する場合
 
 1. `git clone https://github.com/ydipeepo/xdut-router.git` し、
@@ -48,5 +46,10 @@
 ## ライセンス
 
 🔗 [MIT](https://github.com/ydipeepo/xdut-router/blob/main/LICENSE) ライセンスです。
+
+
+#### 表記
+
+ライセンスの表記は必須ではありませんが、歓迎いたします。クレジットする場合は、"Ydi" に帰属させてください。
 
 <br />
