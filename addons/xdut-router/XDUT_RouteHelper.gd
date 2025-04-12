@@ -69,8 +69,11 @@ static func resolve_route_segments(route_node: Node) -> PackedStringArray:
 	return route_segments
 
 static func resolve_path_segments(route_node: Node) -> Variant:
-	var route_wrapper := get_route_wrapper(route_node)
-	var route_matcher_or_canonical: Node = route_wrapper.route_matcher
+	var route_wrapper: XDUT_RouteWrapper
+	var route_matcher_or_canonical: Node = null
+	if route_node != null:
+		route_wrapper = get_route_wrapper(route_node)
+		route_matcher_or_canonical = route_wrapper.route_matcher
 
 	var path_segments: Array[String] = []
 	while route_matcher_or_canonical != null:
