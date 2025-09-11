@@ -25,19 +25,13 @@ static func _add_setting(
 static func _remove_setting(key: String) -> void:
 	ProjectSettings.clear(key)
 
-func _print(message: String, plugin_name: Variant = null) -> void:
-	if OS.has_feature("editor"):
-		if plugin_name == null:
-			plugin_name = _get_plugin_name()
-		print_rich("🧩 [u]", plugin_name, "[/u]: ", message)
-
-func _get_plugin_name() -> String:
-	return "XDUT Router"
-
-func _enter_tree() -> void:
-	_add_setting("xdut/router/navigation/verbose", true, PROPERTY_HINT_NONE, null)
-
+func _add_canonical() -> void:
 	add_autoload_singleton("XDUT_RouterCanonical", "XDUT_RouterCanonical.gd")
+
+func _remove_canonical() -> void:
+	remove_autoload_singleton("XDUT_RouterCanonical")
+
+func _add_custom_types() -> void:
 	add_custom_type("Route", "Node", preload("Route.gd"), preload("Route.png"))
 	add_custom_type("Route2D", "Node2D", preload("Route2D.gd"), preload("Route2D.png"))
 	add_custom_type("Route3D", "Node3D", preload("Route3D.gd"), preload("Route3D.png"))
@@ -51,9 +45,7 @@ func _enter_tree() -> void:
 	add_custom_type("View3D", "Node3D", preload("View3D.gd"), preload("View3D.png"))
 	add_custom_type("ViewControl", "Control", preload("ViewControl.gd"), preload("ViewControl.png"))
 
-	_print("Activated.")
-
-func _exit_tree() -> void:
+func _remove_custom_types() -> void:
 	remove_custom_type("ViewControl")
 	remove_custom_type("View3D")
 	remove_custom_type("View2D")
@@ -66,6 +58,23 @@ func _exit_tree() -> void:
 	remove_custom_type("Route3D")
 	remove_custom_type("Route2D")
 	remove_custom_type("Route")
-	remove_autoload_singleton("XDUT_RouterCanonical")
 
+func _print(message: String, plugin_name: Variant = null) -> void:
+	if OS.has_feature("editor"):
+		if plugin_name == null:
+			plugin_name = _get_plugin_name()
+		print_rich("🧩 [u]", plugin_name, "[/u]: ", message)
+
+func _get_plugin_name() -> String:
+	return "XDUT Router"
+
+func _enter_tree() -> void:
+	_add_setting("xdut/router/navigation/verbose", true, PROPERTY_HINT_NONE, null)
+	_add_canonical()
+	_add_custom_types()
+	_print("Activated.")
+
+func _exit_tree() -> void:
+	_remove_custom_types()
+	_remove_canonical()
 	_remove_setting("xdut/router/navigation/verbose")

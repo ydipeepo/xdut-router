@@ -10,28 +10,19 @@
 [sub_resource type="Resource" id="Resource_aglw1"]
 script = ExtResource("4_t4hmn")
 trans = 4
-ease = 2
 duration = 0.3
 
 [sub_resource type="Resource" id="Resource_dssph"]
 script = ExtResource("4_t4hmn")
 trans = 4
-ease = 2
 duration = 0.3
 
 [sub_resource type="Resource" id="Resource_d5xr6"]
 script = ExtResource("6_5n1yy")
-value_before_enter = 0.0
 value = 1.0
-value_after_exit = 0.0
-delay = 0.0
-process = 0
-inherit_value_before_enter = false
-inherit_value_before_exit = true
 
 [sub_resource type="Resource" id="Resource_8jqp5"]
 script = ExtResource("5_dxlmv")
-node_path = "."
 node_property_key = "modulate:a"
 value = SubResource("Resource_d5xr6")
 enter_transition = SubResource("Resource_aglw1")

@@ -53,17 +53,17 @@ func _perform() -> void:
 
 	_route_event_batch.bundle_pre_enter_path(calls)
 	while not calls.is_empty():
-		await Task.wait_all(calls); calls.clear()
+		await Task.wait_all_v(calls); calls.clear()
 		_route_event_batch.bundle_pre_enter_path(calls)
 
 	_route_event_batch.bundle_exit_path(calls)
 	_route_event_batch.bundle_enter_path(calls)
 	if not calls.is_empty():
-		await Task.wait_all(calls); calls.clear()
+		await Task.wait_all_v(calls); calls.clear()
 
 	_route_event_batch.bundle_post_exit_path(calls)
 	while not calls.is_empty():
-		await Task.wait_all(calls); calls.clear()
+		await Task.wait_all_v(calls); calls.clear()
 		_route_event_batch.bundle_post_exit_path(calls)
 
 	release_complete(_path)

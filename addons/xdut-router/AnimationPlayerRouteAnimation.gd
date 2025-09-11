@@ -17,10 +17,7 @@ class_name AnimationPlayerRouteAnimation extends RouteAnimationBase
 #	METHODS
 #-------------------------------------------------------------------------------
 
-func animate_enter(
-	route_node: Node,
-	route_cancel: Cancel) -> void:
-
+func animate_enter(route_node: Node, route_cancel: Cancel) -> void:
 	if route_node.has_node(player_path):
 		if not enter_animation_name.is_empty() and not route_cancel.is_requested:
 			var node: AnimationPlayer = route_node.get_node(player_path)
@@ -33,10 +30,7 @@ func animate_enter(
 	else:
 		printerr("\tTarget animation player path for transition not found: '%s'" % player_path)
 
-func animate_exit(
-	route_node: Node,
-	route_cancel: Cancel) -> void:
-
+func animate_exit(route_node: Node, route_cancel: Cancel) -> void:
 	if route_node.has_node(player_path):
 		if not exit_animation_name.is_empty() and not route_cancel.is_requested:
 			var node: AnimationPlayer = route_node.get_node(player_path)

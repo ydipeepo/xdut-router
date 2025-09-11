@@ -6,14 +6,12 @@ class_name XDUT_RouteHelper
 
 static func has_route_wrapper(route_node: Node) -> bool:
 	assert(route_node != null)
-
 	return route_node.has_meta(_ROUTE_WRAPPER_META_KEY)
 
 static func get_route_wrapper(route_node: Node) -> XDUT_RouteWrapper:
 	assert(
 		route_node != null and
 		route_node.has_meta(_ROUTE_WRAPPER_META_KEY))
-
 	return route_node.get_meta(_ROUTE_WRAPPER_META_KEY)
 
 static func set_route_wrapper(
@@ -22,14 +20,12 @@ static func set_route_wrapper(
 
 	assert(route_node != null)
 	assert(route_wrapper != null)
-
 	route_node.set_meta(_ROUTE_WRAPPER_META_KEY, route_wrapper)
 
 static func remove_route_wrapper(route_node: Node) -> void:
 	assert(
 		route_node != null and
 		route_node.has_meta(_ROUTE_WRAPPER_META_KEY))
-
 	route_node.remove_meta(_ROUTE_WRAPPER_META_KEY)
 
 static func join_route_segments(route_segments: PackedStringArray) -> String:

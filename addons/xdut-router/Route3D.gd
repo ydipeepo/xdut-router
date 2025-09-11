@@ -242,7 +242,7 @@ func _enter_path(
 		for child_node: Node in get_children():
 			if not XDUT_RouteHelper.has_route_wrapper(child_node):
 				_bundle_child_enter_path(child_node, route_params, route_cancel, calls)
-	await Task.wait_all(calls)
+	await Task.wait_all_v(calls)
 
 	if not route_cancel.is_requested:
 		if _state == _STATE_ENTERING:
@@ -263,7 +263,7 @@ func _exit_path(route_cancel: Cancel) -> void:
 	for animation: RouteAnimationBase in _animations:
 		if animation != null:
 			calls.push_back([animation, &"animate_exit", [self, route_cancel]])
-	await Task.wait_all(calls)
+	await Task.wait_all_v(calls)
 
 	if not route_cancel.is_requested:
 		if _state == _STATE_EXITING:
